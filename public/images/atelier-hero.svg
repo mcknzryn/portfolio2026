@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Atelier Index hero image</title>
+  <desc id="desc">A minimalist black and white editorial layout.</desc>
+  <rect width="1800" height="1100" fill="#fff"/>
+  <rect x="96" y="88" width="1608" height="1" fill="#050505"/>
+  <rect x="96" y="1010" width="1608" height="1" fill="#050505"/>
+  <text x="96" y="600" font-family="Georgia, serif" font-size="250" fill="#050505">Index</text>
+  <text x="108" y="710" font-family="Helvetica, Arial, sans-serif" font-size="28" fill="#050505">ATELIER / ARCHIVE / SYSTEM</text>
+  <rect x="1168" y="218" width="340" height="520" fill="#050505"/>
+  <rect x="1210" y="260" width="256" height="1" fill="#fff"/>
+  <rect x="1210" y="334" width="190" height="1" fill="#fff"/>
+  <rect x="1210" y="408" width="236" height="1" fill="#fff"/>
+</svg>

@@ -1,0 +1,71 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+<div class="project-rows">
+  {projects.map((project) => (
+    <a class="project-row" href={`/work/${project.id}`}>
+      <span class="project-title">{project.data.title}</span>
+      <span class="project-meta">{project.data.discipline.join(', ')}</span>
+      <span class="project-year">{project.data.year}</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .project-rows {
+    border-top: 0.5px solid var(--line);
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(12rem, 0.8fr) 5rem;
+    gap: clamp(1rem, 3vw, 3rem);
+    align-items: baseline;
+    min-height: clamp(5rem, 10vw, 8rem);
+    padding: 1.15rem 0;
+    border-bottom: 0.5px solid var(--line);
+    text-decoration: none;
+  }
+
+  .project-title {
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 8vw, 8rem);
+    line-height: 0.9;
+  }
+
+  .project-meta,
+  .project-year {
+    color: var(--muted);
+    font-size: clamp(0.76rem, 1vw, 0.95rem);
+    text-transform: uppercase;
+  }
+
+  .project-year {
+    text-align: right;
+  }
+
+  @media (hover: hover) {
+    .project-row:hover .project-title {
+      font-style: italic;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .project-row {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+      min-height: 0;
+    }
+
+    .project-year {
+      text-align: left;
+    }
+  }
+</style>

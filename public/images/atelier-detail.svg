@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Atelier Index detail image</title>
+  <desc id="desc">A restrained typography grid.</desc>
+  <rect width="1400" height="900" fill="#fff"/>
+  <g fill="none" stroke="#050505" stroke-width="1">
+    <path d="M80 80h1240M80 820h1240M80 80v740M1320 80v740"/>
+    <path d="M80 250h1240M80 420h1240M80 590h1240"/>
+  </g>
+  <g fill="#050505" font-family="Helvetica, Arial, sans-serif" font-size="24">
+    <text x="110" y="178">01 / CONTENT</text>
+    <text x="110" y="348">02 / RHYTHM</text>
+    <text x="110" y="518">03 / IMAGE</text>
+    <text x="110" y="688">04 / INDEX</text>
+  </g>
+</svg>

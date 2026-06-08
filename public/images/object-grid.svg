@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 950" role="img" aria-labelledby="title desc">
+  <title id="title">Object Study grid image</title>
+  <desc id="desc">A wide black and white composition grid.</desc>
+  <rect width="1400" height="950" fill="#fff"/>
+  <g fill="none" stroke="#050505" stroke-width="1">
+    <rect x="90" y="90" width="360" height="320"/>
+    <rect x="520" y="90" width="360" height="320"/>
+    <rect x="950" y="90" width="360" height="320"/>
+    <rect x="90" y="540" width="360" height="320"/>
+    <rect x="520" y="540" width="360" height="320"/>
+    <rect x="950" y="540" width="360" height="320"/>
+  </g>
+  <rect x="600" y="170" width="200" height="160" fill="#050505"/>
+  <rect x="170" y="620" width="200" height="160" fill="#050505"/>
+  <rect x="1030" y="620" width="200" height="160" fill="#050505"/>
+</svg>

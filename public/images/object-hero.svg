@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Object Study hero image</title>
+  <desc id="desc">A minimal object study composition.</desc>
+  <rect width="1800" height="1100" fill="#fff"/>
+  <rect x="685" y="250" width="430" height="600" fill="#050505"/>
+  <rect x="735" y="300" width="330" height="500" fill="#fff"/>
+  <line x1="140" y1="140" x2="1660" y2="140" stroke="#050505"/>
+  <line x1="140" y1="960" x2="1660" y2="960" stroke="#050505"/>
+  <text x="140" y="230" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#050505">OBJECT STUDY / 2024</text>
+</svg>

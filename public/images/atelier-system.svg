@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Atelier Index system image</title>
+  <desc id="desc">A vertical system diagram.</desc>
+  <rect width="900" height="1200" fill="#fff"/>
+  <rect x="90" y="90" width="720" height="1020" fill="none" stroke="#050505"/>
+  <rect x="160" y="180" width="580" height="1" fill="#050505"/>
+  <rect x="160" y="360" width="360" height="1" fill="#050505"/>
+  <rect x="160" y="540" width="500" height="1" fill="#050505"/>
+  <rect x="160" y="720" width="280" height="1" fill="#050505"/>
+  <text x="160" y="1000" font-family="Georgia, serif" font-size="140" fill="#050505">A</text>
+</svg>

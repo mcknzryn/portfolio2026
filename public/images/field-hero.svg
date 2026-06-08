@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Field Notes hero image</title>
+  <desc id="desc">A black and white field note composition.</desc>
+  <rect width="1600" height="1000" fill="#fff"/>
+  <rect x="0" y="0" width="620" height="1000" fill="#050505"/>
+  <g fill="#fff" font-family="Helvetica, Arial, sans-serif" font-size="26">
+    <text x="88" y="120">FIELD NOTES</text>
+    <text x="88" y="180">MATERIAL OBSERVATION</text>
+  </g>
+  <circle cx="1120" cy="500" r="260" fill="none" stroke="#050505" stroke-width="1"/>
+  <path d="M860 500h520M1120 240v520" stroke="#050505" stroke-width="1"/>
+</svg>

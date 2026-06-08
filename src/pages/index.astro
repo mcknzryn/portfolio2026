@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectRows from '../components/ProjectRows.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="M. Hoffman | Creative Portfolio">
+  <section class="home-hero page" aria-labelledby="hero-title">
+    <div class="hero-meta">
+      <p class="kicker">Creative portfolio</p>
+      <p class="meta">Selected work in identity, art direction, web, and visual systems.</p>
+    </div>
+    <h1 id="hero-title" class="display">Quiet work, large scale.</h1>
+  </section>
+
+  <section class="page intro section-grid" aria-labelledby="intro-title">
+    <p id="intro-title" class="kicker">Approach</p>
+    <p class="large-copy">Minimal structure for image-led stories, sharp typography, and patient case studies.</p>
+  </section>
+
+  <section class="page featured" aria-labelledby="featured-title">
+    <div class="featured-heading">
+      <h2 id="featured-title">Selected Work</h2>
+      <a href="/work">Index</a>
+    </div>
+    <ProjectRows projects={projects} />
+  </section>
+</BaseLayout>
+
+<style>
+  .home-hero {
+    display: grid;
+    align-content: space-between;
+    min-height: calc(100svh - 3rem);
+    padding: clamp(2rem, 5vw, 5rem) 0 clamp(2.5rem, 7vw, 7rem);
+  }
+
+  .hero-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-bottom: clamp(4rem, 13vw, 12rem);
+  }
+
+  .hero-meta .meta {
+    max-width: 21rem;
+    text-align: right;
+  }
+
+  .featured {
+    padding: clamp(3rem, 8vw, 8rem) 0;
+  }
+
+  .featured-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 760px) {
+    .hero-meta {
+      display: grid;
+    }
+
+    .hero-meta .meta {
+      text-align: left;
+    }
+  }
+</style>

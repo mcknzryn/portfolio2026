@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | M. Hoffman">
+  <section class="page about-hero">
+    <p class="kicker">About</p>
+    <h1 class="large-copy">A creative practice for exacting identities, image systems, and editorial web experiences.</h1>
+  </section>
+
+  <section class="page section-grid">
+    <p class="kicker">Profile</p>
+    <div class="copy-stack">
+      <p class="body-copy">This Astro portfolio example is designed for a maker who wants the work to feel spacious, serious, and image-first without relying on decorative flourishes.</p>
+      <p class="body-copy">The visual system is intentionally spare: white ground, black type, thin dividers, oversized project imagery, and project rows that behave like an archive.</p>
+    </div>
+  </section>
+
+  <section class="page section-grid">
+    <p class="kicker">Services</p>
+    <ul class="service-list">
+      <li>Creative direction</li>
+      <li>Identity systems</li>
+      <li>Editorial websites</li>
+      <li>Visual research</li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding: clamp(3rem, 7vw, 7rem) 0 clamp(4rem, 12vw, 12rem);
+  }
+
+  .about-hero .kicker {
+    margin-bottom: clamp(3rem, 10vw, 10rem);
+  }
+
+  .copy-stack {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .service-list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 0.5px solid var(--line);
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 5rem);
+    line-height: 0.98;
+  }
+
+  .service-list li {
+    padding: 0.45em 0;
+    border-bottom: 0.5px solid var(--line);
+  }
+</style>

@@ -1,0 +1,169 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+  return projects.map((project, index) => ({
+    params: { slug: project.id },
+    props: {
+      project,
+      previous: projects[(index - 1 + projects.length) % projects.length],
+      next: projects[(index + 1) % projects.length],
+    },
+  }));
+}
+
+const { project, previous, next } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={`${project.data.title} | Work`}>
+  <article>
+    <header class="page project-header">
+      <div class="project-meta-grid">
+        <p class="kicker">Project</p>
+        <p class="meta">{project.data.year}</p>
+        <p class="meta">{project.data.client}</p>
+        <p class="meta">{project.data.discipline.join(', ')}</p>
+      </div>
+      <h1 class="display">{project.data.title}</h1>
+      <p class="body-copy">{project.data.summary}</p>
+    </header>
+
+    <section class="project-images" aria-label={`${project.data.title} imagery`}>
+      {project.data.images.map((image) => (
+        <figure class:list={['image-block', `image-${image.layout}`]}>
+          <img src={image.src} alt={image.alt} loading={image.layout === 'full' ? 'eager' : 'lazy'} />
+        </figure>
+      ))}
+    </section>
+
+    <section class="page project-body section-grid">
+      <p class="kicker">Notes</p>
+      <div class="markdown-copy">
+        <Content />
+      </div>
+    </section>
+
+    <nav class="page project-nav" aria-label="Project navigation">
+      <a href={`/work/${previous.id}`}>
+        <span class="meta">Previous</span>
+        <strong>{previous.data.title}</strong>
+      </a>
+      <a href={`/work/${next.id}`}>
+        <span class="meta">Next</span>
+        <strong>{next.data.title}</strong>
+      </a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-header {
+    display: grid;
+    gap: clamp(2rem, 6vw, 6rem);
+    padding: clamp(3rem, 7vw, 7rem) 0 clamp(3rem, 8vw, 8rem);
+  }
+
+  .project-meta-grid {
+    display: grid;
+    grid-template-columns: minmax(7rem, 1fr) repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .project-images {
+    display: grid;
+    gap: clamp(3rem, 8vw, 8rem);
+  }
+
+  .image-block {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .image-block img {
+    width: 100%;
+    min-height: clamp(26rem, 72vw, 52rem);
+    object-fit: cover;
+    border-top: 0.5px solid var(--line);
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .image-full {
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .image-wide {
+    width: min(1320px, calc(100vw - (var(--pad) * 2)));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .image-narrow {
+    width: min(720px, calc(100vw - (var(--pad) * 2)));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .image-narrow img {
+    min-height: clamp(22rem, 60vw, 42rem);
+  }
+
+  .markdown-copy {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 46rem;
+  }
+
+  .markdown-copy :global(p) {
+    margin: 0;
+    font-size: clamp(1rem, 1.5vw, 1.35rem);
+    line-height: 1.35;
+  }
+
+  .project-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding: clamp(3rem, 7vw, 7rem) 0;
+    border-top: 0.5px solid var(--line);
+  }
+
+  .project-nav a {
+    display: grid;
+    gap: 0.7rem;
+    min-height: clamp(8rem, 14vw, 13rem);
+    align-content: space-between;
+    padding-top: 1rem;
+    border-top: 0.5px solid var(--line);
+    text-decoration: none;
+  }
+
+  .project-nav a:last-child {
+    text-align: right;
+  }
+
+  .project-nav strong {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 5.6rem);
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  @media (max-width: 760px) {
+    .project-meta-grid,
+    .project-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .project-nav a:last-child {
+      text-align: left;
+    }
+  }
+</style>

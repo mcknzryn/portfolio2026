@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Object Study detail image</title>
+  <desc id="desc">A narrow production detail layout.</desc>
+  <rect width="900" height="1200" fill="#fff"/>
+  <rect x="145" y="130" width="610" height="610" fill="none" stroke="#050505"/>
+  <rect x="300" y="285" width="300" height="300" fill="#050505"/>
+  <line x1="145" y1="860" x2="755" y2="860" stroke="#050505"/>
+  <line x1="145" y1="940" x2="755" y2="940" stroke="#050505"/>
+  <line x1="145" y1="1020" x2="520" y2="1020" stroke="#050505"/>
+</svg>

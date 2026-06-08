@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectRows from '../../components/ProjectRows.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Work | M. Hoffman">
+  <section class="page work-hero">
+    <p class="kicker">Work</p>
+    <h1 class="display">Archive</h1>
+  </section>
+
+  <section class="page work-list" aria-label="Project archive">
+    <ProjectRows projects={projects} />
+  </section>
+</BaseLayout>
+
+<style>
+  .work-hero {
+    padding: clamp(3rem, 7vw, 7rem) 0 clamp(4rem, 10vw, 10rem);
+  }
+
+  .work-hero .kicker {
+    margin-bottom: clamp(3rem, 10vw, 10rem);
+  }
+
+  .work-list {
+    padding-bottom: clamp(4rem, 8vw, 8rem);
+  }
+</style>

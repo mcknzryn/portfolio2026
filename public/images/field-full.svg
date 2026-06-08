@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Field Notes full bleed image</title>
+  <desc id="desc">A sparse research wall in black and white.</desc>
+  <rect width="1800" height="1100" fill="#fff"/>
+  <g fill="none" stroke="#050505" stroke-width="1">
+    <rect x="110" y="120" width="420" height="290"/>
+    <rect x="690" y="120" width="420" height="620"/>
+    <rect x="1270" y="120" width="420" height="290"/>
+    <rect x="110" y="570" width="420" height="410"/>
+    <rect x="1270" y="570" width="420" height="410"/>
+  </g>
+  <rect x="740" y="170" width="320" height="220" fill="#050505"/>
+</svg>

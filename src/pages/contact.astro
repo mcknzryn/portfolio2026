@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Contact | M. Hoffman">
+  <section class="page contact-hero">
+    <p class="kicker">Contact</p>
+    <h1 class="display">Let’s talk.</h1>
+  </section>
+
+  <section class="page contact-grid">
+    <div>
+      <p class="kicker">Email</p>
+      <a class="contact-link" href="mailto:hello@example.com">hello@example.com</a>
+    </div>
+    <div>
+      <p class="kicker">Social</p>
+      <a class="contact-link" href="https://www.instagram.com/" rel="noreferrer">Instagram</a>
+      <a class="contact-link" href="https://www.linkedin.com/" rel="noreferrer">LinkedIn</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-hero {
+    padding: clamp(3rem, 7vw, 7rem) 0 clamp(4rem, 12vw, 12rem);
+  }
+
+  .contact-hero .kicker {
+    margin-bottom: clamp(3rem, 10vw, 10rem);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 7vw, 7rem);
+    padding: clamp(3rem, 7vw, 7rem) 0;
+    border-top: 0.5px solid var(--line);
+  }
+
+  .contact-link {
+    display: block;
+    margin-top: 1rem;
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 5rem);
+    line-height: 1;
+  }
+
+  @media (max-width: 760px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { slide } from 'astro:transitions';
+import SiteHeader from '../components/SiteHeader.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'A minimalist creative portfolio built with Astro content collections and view transitions.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <SiteHeader />
+    <main transition:animate={slide({ duration: 240 })}>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #ffffff;
+    --ink: #050505;
+    --muted: #5a5a5a;
+    --line: rgba(0, 0, 0, 0.18);
+    --max: 1120px;
+    --pad: clamp(1rem, 2.4vw, 2rem);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --grotesk: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--grotesk);
+    font-size: 16px;
+    line-height: 1.25;
+    text-rendering: geometricPrecision;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  body::selection {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  a {
+    color: inherit;
+    text-decoration-thickness: 0.04em;
+    text-underline-offset: 0.18em;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem var(--pad);
+    border-bottom: 0.5px solid var(--line);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(18px);
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    text-transform: uppercase;
+  }
+
+  .brand,
+  .site-header a {
+    text-decoration: none;
+  }
+
+  .site-header nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: clamp(0.85rem, 2vw, 2.25rem);
+  }
+
+  .site-header a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-thickness: 0.05em;
+  }
+
+  main {
+    min-height: calc(100vh - 3rem);
+  }
+
+  .page {
+    width: min(var(--max), calc(100vw - (var(--pad) * 2)));
+    margin: 0 auto;
+  }
+
+  .hairline {
+    border-top: 0.5px solid var(--line);
+  }
+
+  .kicker {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(0.75rem, 0.9vw, 0.9rem);
+    text-transform: uppercase;
+  }
+
+  .display {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(4rem, 13vw, 14rem);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 0.86;
+  }
+
+  .large-copy {
+    margin: 0;
+    max-width: 13ch;
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5.4vw, 5.8rem);
+    font-weight: 400;
+    line-height: 0.96;
+  }
+
+  .body-copy {
+    margin: 0;
+    max-width: 42rem;
+    font-size: clamp(1rem, 1.5vw, 1.35rem);
+    line-height: 1.35;
+  }
+
+  .meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(0.78rem, 1vw, 0.9rem);
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+
+  .section-grid {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(1.5rem, 5vw, 6rem);
+    padding: clamp(3rem, 8vw, 8rem) 0;
+    border-top: 0.5px solid var(--line);
+  }
+
+  .full-bleed {
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
+  @media (max-width: 760px) {
+    .site-header {
+      align-items: flex-start;
+    }
+
+    .section-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+</style>

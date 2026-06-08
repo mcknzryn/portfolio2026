@@ -1,0 +1,19 @@
+---
+const navItems = [
+  { href: '/work', label: 'Work' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Home">M. Hoffman</a>
+  <nav aria-label="Primary navigation">
+    {navItems.map((item) => (
+      <a href={item.href} aria-current={currentPath.startsWith(item.href) ? 'page' : undefined}>
+        {item.label}
+      </a>
+    ))}
+  </nav>
+</header>

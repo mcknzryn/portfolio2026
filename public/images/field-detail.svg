@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Field Notes detail image</title>
+  <desc id="desc">A constrained research note detail.</desc>
+  <rect width="900" height="1100" fill="#fff"/>
+  <text x="90" y="170" font-family="Georgia, serif" font-size="116" fill="#050505">03</text>
+  <g stroke="#050505" stroke-width="1">
+    <path d="M90 260h720M90 420h720M90 580h720M90 740h720"/>
+  </g>
+  <g fill="#050505">
+    <rect x="90" y="850" width="220" height="120"/>
+    <rect x="340" y="850" width="220" height="120"/>
+    <rect x="590" y="850" width="220" height="120"/>
+  </g>
+</svg>
