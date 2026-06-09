@@ -18,7 +18,7 @@ images:
     alt: "Black and white editorial layout study for Atelier Index."
     layout: "full"
     offsetY: "clamp(3rem, 8vw, 6rem)"
-  - src: "/images/anc-greece-detail.jpg"
+  - src: "/images/anc-greece-detail.jpeg"
     alt: "Constrained typographic detail grid for Atelier Index."
     layout: "wide"
   - src: "/images/anc-greece-system.jpg"
