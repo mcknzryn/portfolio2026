@@ -24,6 +24,7 @@ const projects = defineCollection({
       .object({
         trackGap: z.string().optional(),
         trackInset: z.string().optional(),
+        trackEnd: z.string().optional(),
         imageWidths: z
           .object({
             full: z.string().optional(),

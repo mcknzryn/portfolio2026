@@ -23,6 +23,7 @@ const gallery = project.data.gallery || {};
 const galleryStyle = [
   gallery.trackGap ? `--case-track-gap: ${gallery.trackGap};` : '',
   gallery.trackInset ? `--case-track-inset: ${gallery.trackInset};` : '',
+  gallery.trackEnd ? `--case-track-end: ${gallery.trackEnd};` : '',
 ]
   .filter(Boolean)
   .join(' ');
@@ -228,6 +229,7 @@ const getImageStyle = (image) => {
     min-height: 0;
     --case-track-gap: clamp(3rem, 4.8vw, 5.75rem);
     --case-track-inset: clamp(1rem, 1.4vw, 1.8rem);
+    --case-track-end: clamp(5rem, 8vw, 9rem);
   }
 
   .case-copy {
@@ -257,6 +259,7 @@ const getImageStyle = (image) => {
     height: 100%;
     min-width: 0;
     padding-left: var(--case-track-offset, 0px);
+    padding-right: var(--case-track-end, clamp(5rem, 8vw, 9rem));
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: none;
@@ -400,6 +403,7 @@ const getImageStyle = (image) => {
       min-height: 34rem;
       order: 2;
       padding-left: 0;
+      padding-right: var(--case-track-end, clamp(5rem, 8vw, 9rem));
       border-top: 0.5px solid var(--line);
       scroll-padding-inline-start: 0;
     }
