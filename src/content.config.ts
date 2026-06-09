@@ -16,8 +16,23 @@ const projects = defineCollection({
         src: z.string(),
         alt: z.string(),
         layout: z.enum(['full', 'wide', 'narrow']),
+        width: z.string().optional(),
+        offsetY: z.string().optional(),
       }),
     ),
+    gallery: z
+      .object({
+        trackGap: z.string().optional(),
+        trackInset: z.string().optional(),
+        imageWidths: z
+          .object({
+            full: z.string().optional(),
+            wide: z.string().optional(),
+            narrow: z.string().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
   }),
 });
 

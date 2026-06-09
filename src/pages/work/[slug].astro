@@ -19,11 +19,30 @@ const { project, previous, next } = Astro.props;
 
 const projectNumber = String(project.data.order + 1).padStart(2, '0');
 const client = project.data.client || 'Independent';
+const gallery = project.data.gallery || {};
+const galleryStyle = [
+  gallery.trackGap ? `--case-track-gap: ${gallery.trackGap};` : '',
+  gallery.trackInset ? `--case-track-inset: ${gallery.trackInset};` : '',
+]
+  .filter(Boolean)
+  .join(' ');
+
+const getImageStyle = (image) => {
+  const imageWidth = image.width || gallery.imageWidths?.[image.layout];
+  const offsetY = image.offsetY;
+
+  return [
+    imageWidth ? `--case-figure-width: ${imageWidth};` : '',
+    offsetY ? `--case-figure-offset-y: ${offsetY};` : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
 ---
 
 <BaseLayout title={`${project.data.title} | Work`} bodyClass="work-case-page">
   <article class="case-study">
-    <section class="case-main">
+    <section class="case-main" style={galleryStyle}>
       <aside class="case-copy" aria-label={`${project.data.title} project details`}>
         <div class="case-copy-block">
           <p class="case-index">Order {projectNumber}</p>
@@ -48,7 +67,7 @@ const client = project.data.client || 'Independent';
 
       <section class="case-images" aria-label={`${project.data.title} imagery`}>
         {project.data.images.map((image, index) => (
-          <figure class:list={['case-figure', `case-figure--${image.layout}`]}>
+          <figure class:list={['case-figure', `case-figure--${image.layout}`]} style={getImageStyle(image)}>
             <img src={image.src} alt={image.alt} loading={index === 0 ? 'eager' : 'lazy'} />
           </figure>
         ))}
@@ -82,8 +101,8 @@ const client = project.data.client || 'Independent';
 
       const styles = getComputedStyle(main);
       const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
-      const overlap = parseFloat(styles.getPropertyValue('--case-track-overlap')) || 0;
-      const offset = Math.max(0, copy.getBoundingClientRect().width + gap - overlap * 0.65);
+      const inset = parseFloat(styles.getPropertyValue('--case-track-inset')) || 0;
+      const offset = Math.max(0, copy.getBoundingClientRect().width + gap - inset);
 
       main.style.setProperty('--case-track-offset', `${offset}px`);
     };
@@ -207,7 +226,8 @@ const client = project.data.client || 'Independent';
     gap: clamp(1rem, 1.8vw, 1.8rem);
     height: 100%;
     min-height: 0;
-    --case-track-overlap: clamp(0.4rem, 0.8vw, 0.85rem);
+    --case-track-gap: clamp(3rem, 4.8vw, 5.75rem);
+    --case-track-inset: clamp(1rem, 1.4vw, 1.8rem);
   }
 
   .case-copy {
@@ -233,6 +253,7 @@ const client = project.data.client || 'Independent';
     z-index: 0;
     display: flex;
     align-items: flex-start;
+    gap: var(--case-track-gap, clamp(3rem, 4.8vw, 5.75rem));
     height: 100%;
     min-width: 0;
     padding-left: var(--case-track-offset, 0px);
@@ -256,7 +277,9 @@ const client = project.data.client || 'Independent';
     min-width: 0;
     height: auto;
     margin: 0;
-    padding: clamp(1rem, 1.4vw, 1.25rem) var(--pad) clamp(1rem, 1.8vw, 1.6rem);
+    padding: clamp(0.45rem, 0.75vw, 0.85rem) 0 clamp(0.45rem, 0.95vw, 0.95rem);
+    width: var(--case-figure-width, auto);
+    margin-top: var(--case-figure-offset-y, 0);
   }
 
   .case-index {
@@ -302,9 +325,9 @@ const client = project.data.client || 'Independent';
 
   .case-figure img {
     display: block;
-    width: auto;
+    width: 100%;
     height: auto;
-    max-width: min(78vw, 72rem);
+    max-width: none;
     max-height: calc(100dvh - 7rem);
     object-fit: contain;
     border: 0;
@@ -312,15 +335,15 @@ const client = project.data.client || 'Independent';
   }
 
   .case-figure--full img {
-    max-width: min(86vw, 78rem);
+    max-width: none;
   }
 
   .case-figure--wide img {
-    max-width: min(64vw, 58rem);
+    max-width: none;
   }
 
   .case-figure--narrow img {
-    max-width: min(38vw, 32rem);
+    max-width: none;
     background: transparent;
   }
 
@@ -382,15 +405,15 @@ const client = project.data.client || 'Independent';
     }
 
     .case-figure img {
-      width: auto;
-      max-width: min(88vw, 72rem);
       max-height: calc(100dvh - 9rem);
     }
 
-    .case-figure--full img,
-    .case-figure--wide img,
-    .case-figure--narrow img {
-      max-width: min(88vw, 72rem);
+    .case-figure {
+      width: var(--case-figure-width, min(88vw, 72rem));
+    }
+
+    .case-figure img {
+      width: 100%;
     }
 
     .case-footer {

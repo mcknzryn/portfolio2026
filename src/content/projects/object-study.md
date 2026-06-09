@@ -6,6 +6,13 @@ discipline: ["Creative Direction", "Interaction", "Photography"]
 summary: "A restrained product narrative where object studies, production notes, and interaction states share the same visual language."
 order: 3
 heroImage: "/images/object-hero.svg"
+gallery:
+  trackGap: "clamp(3.25rem, 4.8vw, 5.75rem)"
+  trackInset: "clamp(1rem, 1.35vw, 1.65rem)"
+  imageWidths:
+    full: "min(46vw, 54rem)"
+    wide: "min(30vw, 34rem)"
+    narrow: "min(22vw, 24rem)"
 images:
   - src: "/images/object-hero.svg"
     alt: "Minimal monochrome object study hero image."
@@ -13,9 +20,11 @@ images:
   - src: "/images/object-grid.svg"
     alt: "Wide grid of object study compositions."
     layout: "wide"
+    offsetY: "clamp(3rem, 8vw, 6rem)"
   - src: "/images/object-detail.svg"
     alt: "Narrow object study production detail."
     layout: "narrow"
+    offsetY: "clamp(8rem, 16vw, 13rem)"
 ---
 
 Object Study is an example project page for slower product storytelling. The structure favors scale changes over ornament: big image, small note, sharp divider, repeat.
