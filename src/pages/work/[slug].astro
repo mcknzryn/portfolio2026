@@ -1,4 +1,5 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
@@ -15,7 +16,10 @@ export async function getStaticPaths() {
   }));
 }
 
-const { project, previous, next } = Astro.props;
+type ProjectEntry = CollectionEntry<'projects'>;
+type ProjectImage = ProjectEntry['data']['images'][number];
+
+const { project, previous, next }: { project: ProjectEntry; previous: ProjectEntry; next: ProjectEntry } = Astro.props;
 
 const projectNumber = String(project.data.order + 1).padStart(2, '0');
 const client = project.data.client || 'Independent';
@@ -28,7 +32,7 @@ const galleryStyle = [
   .filter(Boolean)
   .join(' ');
 
-const getImageStyle = (image) => {
+const getImageStyle = (image: ProjectImage) => {
   const imageWidth = image.width || gallery.imageWidths?.[image.layout];
   const offsetY = image.offsetY;
 
@@ -46,19 +50,16 @@ const getImageStyle = (image) => {
     <section class="case-main" style={galleryStyle}>
       <aside class="case-copy" aria-label={`${project.data.title} project details`}>
         <div class="case-copy-block">
-          <p class="case-index">Order {projectNumber}</p>
+          <p class="case-index"> [{projectNumber}]</p>
           <h1 class="case-title">{project.data.title}</h1>
           <div class="case-details">
             <p>
-              <span class="case-detail-label">Discipline</span>
               <span>{project.data.discipline.join(', ')}</span>
             </p>
             <p>
-              <span class="case-detail-label">Year</span>
               <span>{project.data.year}</span>
             </p>
             <p>
-              <span class="case-detail-label">Client</span>
               <span>{client}</span>
             </p>
           </div>
@@ -94,16 +95,16 @@ const getImageStyle = (image) => {
   </article>
 
   <script>
-    let controller;
-    let observer;
-    let rafId;
-    let progressRafId;
-    let dragState;
+    let controller: AbortController | undefined;
+    let observer: ResizeObserver | undefined;
+    let rafId: number | undefined;
     let scrollTarget = 0;
+    let handlePopState: (() => void) | undefined;
+    let cleanup: () => void = () => {};
 
     const updateTrackOffset = () => {
-      const main = document.querySelector('.case-main');
-      const copy = document.querySelector('.case-copy');
+      const main = document.querySelector<HTMLElement>('.case-main');
+      const copy = document.querySelector<HTMLElement>('.case-copy');
 
       if (!main || !copy) return;
 
@@ -114,48 +115,6 @@ const getImageStyle = (image) => {
 
       main.style.setProperty('--case-track-offset', `${offset}px`);
     };
-
-    const getProgressMetrics = () => {
-      const track = document.querySelector('.case-images');
-      const rail = document.querySelector('.case-progress');
-
-      if (!track || !rail) return null;
-
-      const maxScrollLeft = Math.max(0, track.scrollWidth - track.clientWidth);
-      const railHeight = rail.clientHeight;
-      const thumbHeight = Math.max(36, railHeight * (track.clientWidth / Math.max(track.scrollWidth, 1)));
-      const travel = Math.max(0, railHeight - thumbHeight);
-
-      return { track, railHeight, maxScrollLeft, thumbHeight, travel };
-    };
-
-    const updateProgress = (progress) => {
-      const thumb = document.querySelector('.case-progress-thumb');
-      const metrics = getProgressMetrics();
-
-      if (!thumb || !metrics) return;
-
-      const clamped = Math.min(1, Math.max(0, progress));
-      const top = metrics.travel * clamped;
-
-      thumb.style.height = `${metrics.thumbHeight}px`;
-      thumb.style.transform = `translateY(${top}px)`;
-    };
-
-    const syncProgress = () => {
-      const track = document.querySelector('.case-images');
-
-      if (!track) return;
-
-      const maxScrollLeft = track.scrollWidth - track.clientWidth;
-      const progress = maxScrollLeft > 0 ? track.scrollLeft / maxScrollLeft : 0;
-
-      updateProgress(progress);
-      progressRafId = undefined;
-    };
-
-    const resetTrack = () => {
-      const track = document.querySelector('.case-images');
 
       if (!track) return;
 
@@ -188,7 +147,7 @@ const getImageStyle = (image) => {
     };
 
     const animateScroll = () => {
-      const track = document.querySelector('.case-images');
+      const track = document.querySelector<HTMLElement>('.case-images');
 
       if (!track) return;
 
@@ -209,10 +168,7 @@ const getImageStyle = (image) => {
       controller?.abort();
       controller = new AbortController();
 
-      const track = document.querySelector('.case-images');
-      const main = document.querySelector('.case-main');
-      const thumb = document.querySelector('.case-progress-thumb');
-      const rail = document.querySelector('.case-progress');
+      const track = document.querySelector<HTMLElement>('.case-images');
 
       if (!track) return;
 
@@ -228,7 +184,7 @@ const getImageStyle = (image) => {
 
       const { signal } = controller;
 
-      track.addEventListener(
+      window.addEventListener(
         'wheel',
         (event) => {
           const hasHorizontalIntent = Math.abs(event.deltaX) > Math.abs(event.deltaY);
@@ -339,31 +295,61 @@ const getImageStyle = (image) => {
       requestAnimationFrame(() => requestAnimationFrame(resetTrack));
     };
 
+    const teardown = () => {
+      cleanup();
+      cleanup = () => {};
+    };
+
     const setup = () => {
+      teardown();
+
       bindTrack();
+      handlePopState = () => {
+        if (window.location.pathname === '/') {
+          window.location.reload();
+        }
+      };
+      window.addEventListener('popstate', handlePopState);
+
       observer?.disconnect();
-      observer = new ResizeObserver(() => {
-        updateTrackOffset();
-        syncProgress();
-      });
-      const main = document.querySelector('.case-main');
+      observer = new ResizeObserver(() => updateTrackOffset());
+      const main = document.querySelector<HTMLElement>('.case-main');
 
       if (main) {
         observer.observe(main);
       }
 
       updateTrackOffset();
-      const track = document.querySelector('.case-images');
+      const track = document.querySelector<HTMLElement>('.case-images');
 
       if (track) {
         scrollTarget = track.scrollLeft;
       }
       syncProgress();
       scheduleReset();
+
+      cleanup = () => {
+        controller?.abort();
+        observer?.disconnect();
+        if (handlePopState) {
+          window.removeEventListener('popstate', handlePopState);
+          handlePopState = undefined;
+        }
+
+        if (rafId != null) {
+          cancelAnimationFrame(rafId);
+          rafId = undefined;
+        }
+      };
     };
 
     document.addEventListener('astro:page-load', setup);
-    window.addEventListener('pageshow', setup);
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        setup();
+      }
+    });
+    document.addEventListener('astro:before-swap', teardown);
   </script>
 </BaseLayout>
 
