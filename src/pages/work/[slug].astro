@@ -94,6 +94,7 @@ const getImageStyle = (image: ProjectImage) => {
     let observer: ResizeObserver | undefined;
     let rafId: number | undefined;
     let scrollTarget = 0;
+    let handlePopState: (() => void) | undefined;
     let cleanup: () => void = () => {};
 
     const updateTrackOffset = () => {
@@ -199,6 +200,13 @@ const getImageStyle = (image: ProjectImage) => {
       teardown();
 
       bindTrack();
+      handlePopState = () => {
+        if (window.location.pathname === '/') {
+          window.location.reload();
+        }
+      };
+      window.addEventListener('popstate', handlePopState);
+
       observer?.disconnect();
       observer = new ResizeObserver(() => updateTrackOffset());
       const main = document.querySelector<HTMLElement>('.case-main');
@@ -218,6 +226,10 @@ const getImageStyle = (image: ProjectImage) => {
       cleanup = () => {
         controller?.abort();
         observer?.disconnect();
+        if (handlePopState) {
+          window.removeEventListener('popstate', handlePopState);
+          handlePopState = undefined;
+        }
 
         if (rafId != null) {
           cancelAnimationFrame(rafId);
