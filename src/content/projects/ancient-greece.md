@@ -4,7 +4,7 @@ year: "2024"
 client: "Independent"
 discipline: ["Photographer"]
 summary: "A quiet index for a design studio, built around severe type, modular imagery, and an archive-first reading rhythm."
-order: 1
+order: 0
 heroImage: "/images/anc-greece-hero.jpg"
 images:
   - src: "/images/anc-greece-hero.jpg"
