@@ -20,16 +20,13 @@ const { Content } = await render(project);
 
 const projectNumber = String(project.data.order + 1).padStart(2, '0');
 const client = project.data.client || 'Independent';
-const hero = project.data.images[0];
-const detail = project.data.images[1];
-const system = project.data.images[2];
 ---
 
 <BaseLayout title={`${project.data.title} | Work`} bodyClass="work-case-page">
   <article class="case-study">
-    <section class="case-track" aria-label={`${project.data.title} case study`}>
-      <section class="case-panel case-panel--intro">
-        <div class="case-copy">
+    <section class="case-main">
+      <aside class="case-copy" aria-label={`${project.data.title} project details`}>
+        <div class="case-copy-block">
           <p class="case-index">({projectNumber})</p>
           <h1 class="case-title">{project.data.title}</h1>
           <p class="case-disciplines">{project.data.discipline.join(', ')}</p>
@@ -40,38 +37,18 @@ const system = project.data.images[2];
           </div>
         </div>
 
-        {hero && (
-          <figure class="case-figure case-figure--hero">
-            <img src={hero.src} alt={hero.alt} loading="eager" />
-          </figure>
-        )}
-      </section>
-
-      <section class="case-panel case-panel--notes">
-        <div class="case-panel-heading">
+        <div class="case-copy-block">
           <p class="case-kicker">Notes</p>
           <p class="case-panel-copy">
-            A quieter page for slower image reading, with the text and image field broken into lateral spreads rather than a long vertical stack.
+            A quieter page for slower image reading, with the text held in a fixed left rail while the image sequence moves independently to the right.
           </p>
+          <div class="case-notes">
+            <Content />
+          </div>
         </div>
 
-        <div class="case-notes">
-          <Content />
-        </div>
-
-        {detail && (
-          <figure class="case-figure case-figure--detail">
-            <img src={detail.src} alt={detail.alt} loading="lazy" />
-          </figure>
-        )}
-      </section>
-
-      <section class="case-panel case-panel--system">
-        <div class="case-system-copy">
+        <div class="case-copy-block case-copy-block--meta">
           <p class="case-kicker">Selected frame</p>
-          <p class="case-panel-copy">
-            The final panel gives the page room to breathe, letting the sequence end on a single image and a clean block of metadata instead of forcing a vertical collapse.
-          </p>
           <div class="case-details">
             <p>
               <span class="case-detail-label">Client</span>
@@ -87,12 +64,14 @@ const system = project.data.images[2];
             </p>
           </div>
         </div>
+      </aside>
 
-        {system && (
-          <figure class="case-figure case-figure--system">
-            <img src={system.src} alt={system.alt} loading="lazy" />
+      <section class="case-images" aria-label={`${project.data.title} imagery`}>
+        {project.data.images.map((image, index) => (
+          <figure class:list={['case-figure', `case-figure--${image.layout}`, index === 0 && 'case-figure--first']}>
+            <img src={image.src} alt={image.alt} loading={index === 0 ? 'eager' : 'lazy'} />
           </figure>
-        )}
+        ))}
       </section>
     </section>
 
@@ -118,7 +97,7 @@ const system = project.data.images[2];
     let controller;
 
     const resetTrack = () => {
-      const track = document.querySelector('.case-track');
+      const track = document.querySelector('.case-images');
 
       if (!track) return;
 
@@ -130,7 +109,7 @@ const system = project.data.images[2];
       controller?.abort();
       controller = new AbortController();
 
-      const track = document.querySelector('.case-track');
+      const track = document.querySelector('.case-images');
 
       if (!track) return;
 
@@ -183,53 +162,66 @@ const system = project.data.images[2];
     min-height: 0;
   }
 
-  .case-track {
-    display: flex;
+  .case-main {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(19rem, 0.36fr) minmax(0, 0.64fr);
+    gap: clamp(1rem, 1.8vw, 1.8rem);
     height: 100%;
     min-height: 0;
+  }
+
+  .case-copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-content: start;
+    gap: clamp(1.2rem, 1.8vw, 2rem);
+    padding: clamp(1rem, 1.4vw, 1.25rem) 0 clamp(1rem, 1.8vw, 1.6rem) var(--pad);
+    overflow: auto;
+    min-height: 0;
+    background: transparent;
+  }
+
+  .case-copy-block {
+    display: grid;
+    gap: 0.8rem;
+    max-width: 22rem;
+  }
+
+  .case-copy-block--meta {
+    padding-top: 0.35rem;
+    border-top: 0.5px solid var(--line);
+  }
+
+  .case-images {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    height: 100%;
+    min-width: 0;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x proximity;
     scroll-behavior: auto;
-    scroll-padding-inline: var(--pad);
+    scroll-padding-inline: 0;
     scrollbar-width: none;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
   }
 
-  .case-track::-webkit-scrollbar {
+  .case-images::-webkit-scrollbar {
     display: none;
   }
 
-  .case-panel {
+  .case-figure {
     flex: 0 0 100%;
     min-width: 100%;
     height: 100%;
+    margin: 0;
     padding: clamp(1rem, 1.4vw, 1.25rem) var(--pad) clamp(1rem, 1.8vw, 1.6rem);
     scroll-snap-align: start;
-    display: grid;
-    gap: clamp(1.15rem, 1.6vw, 1.8rem);
-  }
-
-  .case-panel--intro,
-  .case-panel--system {
-    grid-template-columns: minmax(15rem, 0.58fr) minmax(0, 1.42fr);
-    align-items: start;
-  }
-
-  .case-panel--notes {
-    grid-template-columns: minmax(15rem, 0.62fr) minmax(0, 1.38fr);
-    align-items: start;
-  }
-
-  .case-copy,
-  .case-panel-heading,
-  .case-system-copy {
-    display: grid;
-    align-content: start;
-    gap: 0.8rem;
-    max-width: 24rem;
-    padding-top: 0;
   }
 
   .case-index {
@@ -294,7 +286,7 @@ const system = project.data.images[2];
   .case-notes {
     display: grid;
     gap: 1rem;
-    max-width: 26rem;
+    max-width: 22rem;
   }
 
   .case-details {
@@ -304,33 +296,30 @@ const system = project.data.images[2];
     border-top: 0.5px solid var(--line);
   }
 
-  .case-figure {
-    margin: 0;
-    min-width: 0;
-    align-self: center;
-  }
-
   .case-figure img {
     width: 100%;
-    height: min(100%, 84vh);
-    max-height: calc(100dvh - 6.6rem);
+    height: 100%;
+    max-height: calc(100dvh - 7rem);
     object-fit: cover;
     border: 0.5px solid var(--line);
     background: #f4f4f4;
   }
 
-  .case-figure--hero img {
-    min-height: 38rem;
+  .case-figure--first {
+    padding-left: var(--pad);
   }
 
-  .case-figure--detail img,
-  .case-figure--system img {
-    min-height: 26rem;
+  .case-figure--full img {
+    object-fit: cover;
   }
 
-  .case-panel--notes .case-figure--detail,
-  .case-panel--system .case-figure--system {
-    align-self: end;
+  .case-figure--wide img {
+    object-fit: cover;
+  }
+
+  .case-figure--narrow img {
+    object-fit: contain;
+    background: #f7f7f7;
   }
 
   .case-footer {
@@ -386,24 +375,33 @@ const system = project.data.images[2];
       transition: transform 320ms ease, box-shadow 320ms ease;
     }
 
-    .case-panel:hover .case-figure img {
+    .case-figure:hover img {
       transform: scale(1.01);
     }
   }
 
-  @media (max-width: 920px) {
-    .case-panel--intro,
-    .case-panel--notes,
-    .case-panel--system {
+  @media (max-width: 980px) {
+    .case-main {
       grid-template-columns: 1fr;
-      align-content: start;
+    }
+
+    .case-copy {
+      padding-right: var(--pad);
+      background: transparent;
+    }
+
+    .case-images {
+      position: relative;
+      min-height: 34rem;
+      order: 2;
+      border-top: 0.5px solid var(--line);
     }
 
     .case-figure img {
       height: auto;
-      min-height: 18rem;
+      min-height: 28rem;
       max-height: none;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 16 / 10;
     }
 
     .case-footer {
@@ -425,13 +423,17 @@ const system = project.data.images[2];
   }
 
   @media (max-width: 760px) {
-    .case-panel {
-      padding-inline: var(--pad);
+    .case-copy {
       padding-top: 0.85rem;
+      gap: 1rem;
     }
 
     .case-title {
       font-size: clamp(2.8rem, 15vw, 5rem);
+    }
+
+    .case-images {
+      min-height: 24rem;
     }
   }
 </style>
