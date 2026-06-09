@@ -94,13 +94,23 @@ const {
     justify-content: space-between;
     gap: 1rem;
     padding: 0.45rem var(--pad);
-    font-size: clamp(0.68rem, 0.78vw, 0.78rem);
-    text-transform: uppercase;
   }
 
   .brand,
   .site-header a {
     text-decoration: none;
+  }
+
+  .brand {
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    font-size: clamp(.75rem, 2rem, 3rem);
+    font-weight: 700;
+  }
+
+   .site-nav {
+    font-size: clamp(0.68rem, 0.78vw, 0.78rem);
+    text-transform: uppercase;
   }
 
   .site-header nav {
@@ -114,6 +124,7 @@ const {
     text-decoration: underline;
     text-decoration-thickness: 0.05em;
   }
+
 
   main {
     min-height: calc(100vh - 3rem);

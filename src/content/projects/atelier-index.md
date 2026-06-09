@@ -1,19 +1,19 @@
 ---
-title: "Atelier Index"
-year: "2026"
+title: "Ancient Greece"
+year: "2024"
 client: "Independent"
 discipline: ["Identity", "Editorial System", "Web"]
 summary: "A quiet index for a design studio, built around severe type, modular imagery, and an archive-first reading rhythm."
 order: 1
-heroImage: "/images/atelier-hero.svg"
+heroImage: "/images/anc-greece-hero.jpg"
 images:
-  - src: "/images/atelier-hero.svg"
+  - src: "/images/anc-greece-hero.jpg"
     alt: "Black and white editorial layout study for Atelier Index."
     layout: "full"
-  - src: "/images/atelier-detail.svg"
+  - src: "images/anc-greece-detail.jpg"
     alt: "Constrained typographic detail grid for Atelier Index."
     layout: "wide"
-  - src: "/images/atelier-system.svg"
+  - src:  "images/anc-greece-system.jpg"
     alt: "Narrow system diagram for Atelier Index."
     layout: "narrow"
 ---
