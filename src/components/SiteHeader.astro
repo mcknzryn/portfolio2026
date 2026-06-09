@@ -8,7 +8,7 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header">
-  <a class="brand" href="/" aria-label="Home">M. Hoffman</a>
+  <a class="brand" href="/" aria-label="Home">McKenzie Ryan</a>
   <nav aria-label="Primary navigation">
     {navItems.map((item) => (
       <a href={item.href} aria-current={currentPath.startsWith(item.href) ? 'page' : undefined}>

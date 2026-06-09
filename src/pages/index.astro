@@ -18,8 +18,8 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   </section>
 
   <section class="page featured" aria-labelledby="featured-title">
+    <p id="featured-title" class="kicker">Selected Work</p>
     <div class="featured-heading">
-      <h2 id="featured-title">Selected Work</h2>
       <a href="/work">Index</a>
     </div>
     <ProjectRows projects={projects} showPreview />
@@ -55,7 +55,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
   .featured-heading {
     display: flex;
-    justify-content: space-between;
+    justify-content: right;
     gap: 1rem;
     align-items: baseline;
     width: min(100%, 1320px);
