@@ -1,19 +1,19 @@
 ---
-title: "Field Notes"
-year: "2025"
-client: "Studio Research"
-discipline: ["Art Direction", "Research", "Prototype"]
+title: "Wine & Spirits"
+year: "2026"
+client: "Skurnik"
+discipline: ["Photographer"]
 summary: "A visual research prototype for cataloging site visits, material references, and production observations."
 order: 2
-heroImage: "/images/field-hero.svg"
+heroImage: "/images/wine-spirits-hero.jpg"
 images:
-  - src: "/images/field-hero.svg"
+  - src: "/images/wine-spirits-hero.jpg"
     alt: "Oversized black and white field note composition."
     layout: "wide"
-  - src: "/images/field-full.svg"
+  - src: "/images/wine-spirits-full.jpg"
     alt: "Full bleed research image wall for Field Notes."
     layout: "full"
-  - src: "/images/field-detail.svg"
+  - src: "/images/wine-spirits-detail.jpg"
     alt: "Constrained detail from the Field Notes prototype."
     layout: "narrow"
 ---

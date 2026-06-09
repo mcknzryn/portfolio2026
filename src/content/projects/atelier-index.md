@@ -2,7 +2,7 @@
 title: "Ancient Greece"
 year: "2024"
 client: "Independent"
-discipline: ["Identity", "Editorial System", "Web"]
+discipline: ["Photographer"]
 summary: "A quiet index for a design studio, built around severe type, modular imagery, and an archive-first reading rhythm."
 order: 1
 heroImage: "/images/anc-greece-hero.jpg"
