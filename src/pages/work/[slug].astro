@@ -17,153 +17,359 @@ export async function getStaticPaths() {
 
 const { project, previous, next } = Astro.props;
 const { Content } = await render(project);
+
+const projectNumber = String(project.data.order + 1).padStart(2, '0');
+const client = project.data.client || 'Independent';
+const hero = project.data.images[0];
+const detail = project.data.images[1];
+const system = project.data.images[2];
 ---
 
-<BaseLayout title={`${project.data.title} | Work`}>
-  <article>
-    <header class="page project-header">
-      <div class="project-meta-grid">
-        <p class="kicker">Project</p>
-        <p class="meta">{project.data.year}</p>
-        <p class="meta">{project.data.client}</p>
-        <p class="meta">{project.data.discipline.join(', ')}</p>
-      </div>
-      <h1 class="display">{project.data.title}</h1>
-      <p class="body-copy">{project.data.summary}</p>
-    </header>
+<BaseLayout title={`${project.data.title} | Work`} bodyClass="work-case-page">
+  <article class="case-study">
+    <section class="case-track" aria-label={`${project.data.title} case study`}>
+      <section class="case-panel case-panel--intro">
+        <div class="case-copy">
+          <p class="case-index">({projectNumber})</p>
+          <h1 class="case-title">{project.data.title}</h1>
+          <p class="case-disciplines">{project.data.discipline.join(', ')}</p>
+          <p class="case-summary">{project.data.summary}</p>
+          <div class="case-meta">
+            <p>{client}</p>
+            <p>{project.data.year}</p>
+          </div>
+        </div>
 
-    <section class="project-images" aria-label={`${project.data.title} imagery`}>
-      {project.data.images.map((image) => (
-        <figure class:list={['image-block', `image-${image.layout}`]}>
-          <img src={image.src} alt={image.alt} loading={image.layout === 'full' ? 'eager' : 'lazy'} />
-        </figure>
-      ))}
+        {hero && (
+          <figure class="case-figure case-figure--hero">
+            <img src={hero.src} alt={hero.alt} loading="eager" />
+          </figure>
+        )}
+      </section>
+
+      <section class="case-panel case-panel--notes">
+        <div class="case-panel-heading">
+          <p class="case-kicker">Notes</p>
+          <p class="case-panel-copy">
+            A quieter page for slower image reading, with the text and image field broken into lateral spreads rather than a long vertical stack.
+          </p>
+        </div>
+
+        <div class="case-notes">
+          <Content />
+        </div>
+
+        {detail && (
+          <figure class="case-figure case-figure--detail">
+            <img src={detail.src} alt={detail.alt} loading="lazy" />
+          </figure>
+        )}
+      </section>
+
+      <section class="case-panel case-panel--system">
+        <div class="case-system-copy">
+          <p class="case-kicker">Selected frame</p>
+          <p class="case-panel-copy">
+            The final panel gives the page room to breathe, letting the sequence end on a single image and a clean block of metadata instead of forcing a vertical collapse.
+          </p>
+          <div class="case-details">
+            <p>
+              <span class="case-detail-label">Client</span>
+              <span>{client}</span>
+            </p>
+            <p>
+              <span class="case-detail-label">Year</span>
+              <span>{project.data.year}</span>
+            </p>
+            <p>
+              <span class="case-detail-label">Discipline</span>
+              <span>{project.data.discipline.join(', ')}</span>
+            </p>
+          </div>
+        </div>
+
+        {system && (
+          <figure class="case-figure case-figure--system">
+            <img src={system.src} alt={system.alt} loading="lazy" />
+          </figure>
+        )}
+      </section>
     </section>
 
-    <section class="page project-body section-grid">
-      <p class="kicker">Notes</p>
-      <div class="markdown-copy">
-        <Content />
+    <footer class="case-footer" aria-label="Project navigation">
+      <div class="case-footer-meta">
+        <p class="case-kicker">{client}</p>
+        <p class="case-footer-year">{project.data.year}</p>
       </div>
-    </section>
 
-    <nav class="page project-nav" aria-label="Project navigation">
-      <a href={`/work/${previous.id}`}>
-        <span class="meta">Previous</span>
-        <strong>{previous.data.title}</strong>
+      <a class="case-footer-link case-footer-link--prev" href={`/work/${previous.id}`}>
+        Previous project
       </a>
-      <a href={`/work/${next.id}`}>
-        <span class="meta">Next</span>
-        <strong>{next.data.title}</strong>
+
+      <span class="case-footer-counter" aria-label={`Project ${projectNumber}`}>[{projectNumber}]</span>
+
+      <a class="case-footer-link case-footer-link--next" href={`/work/${next.id}`}>
+        Next project
       </a>
-    </nav>
+    </footer>
   </article>
 </BaseLayout>
 
 <style>
-  .project-header {
+  .case-study {
     display: grid;
-    gap: clamp(2rem, 6vw, 6rem);
-    padding: clamp(3rem, 7vw, 7rem) 0 clamp(3rem, 8vw, 8rem);
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100%;
+    min-height: 0;
   }
 
-  .project-meta-grid {
+  .case-track {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .case-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .case-panel {
+    flex: 0 0 100%;
+    min-width: 100%;
+    height: 100%;
+    padding: clamp(1rem, 1.6vw, 1.4rem) var(--pad) clamp(1.25rem, 2vw, 2rem);
+    scroll-snap-align: start;
     display: grid;
-    grid-template-columns: minmax(7rem, 1fr) repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 0.5px solid var(--line);
+    gap: clamp(1rem, 1.5vw, 1.5rem);
   }
 
-  .project-images {
+  .case-panel--intro,
+  .case-panel--system {
+    grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.6fr);
+    align-items: center;
+  }
+
+  .case-panel--notes {
+    grid-template-columns: minmax(17rem, 0.78fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .case-copy,
+  .case-panel-heading,
+  .case-system-copy {
     display: grid;
-    gap: clamp(3rem, 8vw, 8rem);
+    align-content: start;
+    gap: 0.85rem;
+    max-width: 36rem;
+    padding-top: clamp(0.1rem, 0.5vw, 0.5rem);
   }
 
-  .image-block {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .image-block img {
-    width: 100%;
-    min-height: clamp(26rem, 72vw, 52rem);
-    object-fit: cover;
-    border-top: 0.5px solid var(--line);
-    border-bottom: 0.5px solid var(--line);
-  }
-
-  .image-full {
-    width: 100vw;
-    margin-left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .image-wide {
-    width: min(1320px, calc(100vw - (var(--pad) * 2)));
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .image-narrow {
-    width: min(720px, calc(100vw - (var(--pad) * 2)));
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .image-narrow img {
-    min-height: clamp(22rem, 60vw, 42rem);
-  }
-
-  .markdown-copy {
-    display: grid;
-    gap: 1.25rem;
-    max-width: 46rem;
-  }
-
-  .markdown-copy :global(p) {
+  .case-index {
     margin: 0;
-    font-size: clamp(1rem, 1.5vw, 1.35rem);
+    color: var(--muted);
+    font-size: clamp(0.85rem, 1.1vw, 1rem);
+    line-height: 1;
+  }
+
+  .case-title {
+    margin: 0;
+    max-width: 11ch;
+    font-family: var(--serif);
+    font-size: clamp(3.75rem, 8.25vw, 8.5rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.86;
+    text-transform: uppercase;
+  }
+
+  .case-disciplines {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(0.9rem, 1vw, 1.05rem);
+    font-weight: 500;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .case-summary,
+  .case-panel-copy,
+  .case-notes :global(p) {
+    margin: 0;
+    max-width: 32rem;
+    color: var(--muted);
+    font-size: clamp(0.98rem, 1.25vw, 1.25rem);
+    line-height: 1.38;
+  }
+
+  .case-meta {
+    display: grid;
+    gap: 0.2rem;
+    margin-top: clamp(0.6rem, 1vw, 1rem);
+  }
+
+  .case-meta p,
+  .case-details p {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    color: var(--muted);
+    font-size: clamp(0.78rem, 0.92vw, 0.92rem);
     line-height: 1.35;
+    text-transform: uppercase;
   }
 
-  .project-nav {
+  .case-detail-label {
+    color: var(--ink);
+  }
+
+  .case-notes {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
-    padding: clamp(3rem, 7vw, 7rem) 0;
+    max-width: 34rem;
+  }
+
+  .case-details {
+    display: grid;
+    gap: 0.45rem;
+    padding-top: 0.35rem;
     border-top: 0.5px solid var(--line);
   }
 
-  .project-nav a {
+  .case-figure {
+    margin: 0;
+    min-width: 0;
+    align-self: center;
+  }
+
+  .case-figure img {
+    width: 100%;
+    height: min(100%, 78vh);
+    max-height: calc(100dvh - 8.5rem);
+    object-fit: cover;
+    border: 0.5px solid var(--line);
+    background: #f4f4f4;
+  }
+
+  .case-figure--hero img {
+    min-height: 34rem;
+  }
+
+  .case-figure--detail img,
+  .case-figure--system img {
+    min-height: 24rem;
+  }
+
+  .case-panel--notes .case-figure--detail,
+  .case-panel--system .case-figure--system {
+    align-self: end;
+  }
+
+  .case-footer {
     display: grid;
-    gap: 0.7rem;
-    min-height: clamp(8rem, 14vw, 13rem);
-    align-content: space-between;
-    padding-top: 1rem;
+    grid-template-columns: minmax(11rem, 1fr) minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    gap: 1rem;
+    padding: 0.7rem var(--pad) 0.95rem;
     border-top: 0.5px solid var(--line);
+  }
+
+  .case-footer-meta {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .case-footer-year {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+  }
+
+  .case-footer-link {
+    align-self: center;
+    color: var(--ink);
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    font-weight: 500;
     text-decoration: none;
   }
 
-  .project-nav a:last-child {
-    text-align: right;
+  .case-footer-link--prev {
+    justify-self: center;
   }
 
-  .project-nav strong {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 5vw, 5.6rem);
-    font-weight: 400;
-    line-height: 0.95;
+  .case-footer-link--next {
+    justify-self: end;
+  }
+
+  .case-footer-counter {
+    color: var(--muted);
+    font-size: clamp(0.82rem, 0.95vw, 0.92rem);
+    justify-self: center;
+  }
+
+  @media (hover: hover) {
+    .case-footer-link:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.18em;
+    }
+
+    .case-figure img {
+      transition: transform 320ms ease, box-shadow 320ms ease;
+    }
+
+    .case-panel:hover .case-figure img {
+      transform: scale(1.01);
+    }
+  }
+
+  @media (max-width: 920px) {
+    .case-panel--intro,
+    .case-panel--notes,
+    .case-panel--system {
+      grid-template-columns: 1fr;
+      align-content: start;
+    }
+
+    .case-figure img {
+      height: auto;
+      min-height: 18rem;
+      max-height: none;
+      aspect-ratio: 4 / 3;
+    }
+
+    .case-footer {
+      grid-template-columns: 1fr auto;
+      row-gap: 0.5rem;
+    }
+
+    .case-footer-link--prev {
+      justify-self: start;
+    }
+
+    .case-footer-link--next {
+      justify-self: end;
+    }
+
+    .case-footer-counter {
+      display: none;
+    }
   }
 
   @media (max-width: 760px) {
-    .project-meta-grid,
-    .project-nav {
-      grid-template-columns: 1fr;
+    .case-panel {
+      padding-inline: var(--pad);
+      padding-top: 0.85rem;
     }
 
-    .project-nav a:last-child {
-      text-align: left;
+    .case-title {
+      font-size: clamp(3rem, 16vw, 5.5rem);
     }
   }
 </style>

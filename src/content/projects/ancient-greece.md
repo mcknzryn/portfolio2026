@@ -10,10 +10,10 @@ images:
   - src: "/images/anc-greece-hero.jpg"
     alt: "Black and white editorial layout study for Atelier Index."
     layout: "full"
-  - src: "images/anc-greece-detail.jpg"
+  - src: "/images/anc-greece-detail.jpg"
     alt: "Constrained typographic detail grid for Atelier Index."
     layout: "wide"
-  - src:  "images/anc-greece-system.jpg"
+  - src: "/images/anc-greece-system.jpg"
     alt: "Narrow system diagram for Atelier Index."
     layout: "narrow"
 ---

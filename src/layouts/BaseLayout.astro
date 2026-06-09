@@ -6,11 +6,13 @@ import SiteHeader from '../components/SiteHeader.astro';
 interface Props {
   title: string;
   description?: string;
+  bodyClass?: string;
 }
 
 const {
   title,
   description = 'A minimalist creative portfolio built with Astro content collections and view transitions.',
+  bodyClass = '',
 } = Astro.props;
 ---
 
@@ -29,7 +31,7 @@ const {
     <title>{title}</title>
     <ClientRouter />
   </head>
-  <body>
+  <body class:list={bodyClass}>
     <SiteHeader />
     <main transition:animate={slide({ duration: 240 })}>
       <slot />
@@ -67,6 +69,10 @@ const {
     min-width: 320px;
     background: var(--bg);
     color: var(--ink);
+  }
+
+  body.work-case-page {
+    overflow: hidden;
   }
 
   body::selection {
@@ -128,6 +134,12 @@ const {
 
   main {
     min-height: calc(100vh - 3rem);
+  }
+
+  body.work-case-page main {
+    height: calc(100dvh - 3.25rem);
+    min-height: 0;
+    overflow: hidden;
   }
 
   .page {
