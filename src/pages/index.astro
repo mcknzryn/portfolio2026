@@ -25,7 +25,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
       <h2 id="featured-title">Selected Work</h2>
       <a href="/work">Index</a>
     </div>
-    <ProjectRows projects={projects} />
+    <ProjectRows projects={projects} showPreview />
   </section>
 </BaseLayout>
 
