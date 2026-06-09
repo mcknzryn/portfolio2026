@@ -7,12 +7,9 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 ---
 
 <BaseLayout title="M. Hoffman | Creative Portfolio">
-  <section class="home-hero page" aria-labelledby="hero-title">
-    <div class="hero-meta">
-      <p class="kicker">Creative portfolio</p>
-      <p class="meta">Selected work in identity, art direction, web, and visual systems.</p>
-    </div>
-    <h1 id="hero-title" class="display">Quiet work, large scale.</h1>
+  <section class="home-hero page" aria-labelledby="home-title">
+    <h1 id="home-title">M. Hoffman Creative Portfolio</h1>
+    <img src="/images/website-large-5.gif" alt="" loading="eager" />
   </section>
 
   <section class="page intro section-grid" aria-labelledby="intro-title">
@@ -32,21 +29,24 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 <style>
   .home-hero {
     display: grid;
-    align-content: space-between;
     min-height: calc(100svh - 3rem);
-    padding: clamp(2rem, 5vw, 5rem) 0 clamp(2.5rem, 7vw, 7rem);
+    align-items: end;
+    padding: clamp(1.5rem, 4vw, 4rem) 0 clamp(2.5rem, 7vw, 7rem);
   }
 
-  .hero-meta {
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
-    padding-bottom: clamp(4rem, 13vw, 12rem);
+  .home-hero h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
-  .hero-meta .meta {
-    max-width: 21rem;
-    text-align: right;
+  .home-hero img {
+    width: 100%;
+    max-height: min(78svh, 58rem);
+    object-fit: cover;
   }
 
   .featured {
@@ -58,23 +58,22 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
     justify-content: space-between;
     gap: 1rem;
     align-items: baseline;
-    margin-bottom: 1rem;
+    width: min(100%, 1320px);
+    margin: 0 auto clamp(0.65rem, 1.2vw, 1rem);
+    padding: 0 clamp(1rem, 3vw, 4rem);
   }
 
-  h2 {
+  h2,
+  .featured-heading a {
     margin: 0;
-    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    color: var(--muted);
+    font-size: clamp(0.6rem, 0.68vw, 0.72rem);
     font-weight: 400;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  @media (max-width: 760px) {
-    .hero-meta {
-      display: grid;
-    }
-
-    .hero-meta .meta {
-      text-align: left;
-    }
+  .featured-heading a {
+    text-decoration: none;
   }
 </style>
