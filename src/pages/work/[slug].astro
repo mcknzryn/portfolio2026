@@ -73,6 +73,11 @@ const getImageStyle = (image) => {
           </figure>
         ))}
       </section>
+
+      <div class="case-progress" aria-hidden="true">
+        <span class="case-progress-track"></span>
+        <span class="case-progress-thumb"></span>
+      </div>
     </section>
 
     <footer class="case-footer" aria-label="Project navigation">
@@ -92,6 +97,8 @@ const getImageStyle = (image) => {
     let controller;
     let observer;
     let rafId;
+    let progressRafId;
+    let dragState;
     let scrollTarget = 0;
 
     const updateTrackOffset = () => {
@@ -108,6 +115,45 @@ const getImageStyle = (image) => {
       main.style.setProperty('--case-track-offset', `${offset}px`);
     };
 
+    const getProgressMetrics = () => {
+      const track = document.querySelector('.case-images');
+      const rail = document.querySelector('.case-progress');
+
+      if (!track || !rail) return null;
+
+      const maxScrollLeft = Math.max(0, track.scrollWidth - track.clientWidth);
+      const railHeight = rail.clientHeight;
+      const thumbHeight = Math.max(36, railHeight * (track.clientWidth / Math.max(track.scrollWidth, 1)));
+      const travel = Math.max(0, railHeight - thumbHeight);
+
+      return { track, railHeight, maxScrollLeft, thumbHeight, travel };
+    };
+
+    const updateProgress = (progress) => {
+      const thumb = document.querySelector('.case-progress-thumb');
+      const metrics = getProgressMetrics();
+
+      if (!thumb || !metrics) return;
+
+      const clamped = Math.min(1, Math.max(0, progress));
+      const top = metrics.travel * clamped;
+
+      thumb.style.height = `${metrics.thumbHeight}px`;
+      thumb.style.transform = `translateY(${top}px)`;
+    };
+
+    const syncProgress = () => {
+      const track = document.querySelector('.case-images');
+
+      if (!track) return;
+
+      const maxScrollLeft = track.scrollWidth - track.clientWidth;
+      const progress = maxScrollLeft > 0 ? track.scrollLeft / maxScrollLeft : 0;
+
+      updateProgress(progress);
+      progressRafId = undefined;
+    };
+
     const resetTrack = () => {
       const track = document.querySelector('.case-images');
 
@@ -118,9 +164,27 @@ const getImageStyle = (image) => {
         rafId = undefined;
       }
 
+      if (progressRafId != null) {
+        cancelAnimationFrame(progressRafId);
+        progressRafId = undefined;
+      }
+
       track.scrollLeft = 0;
       track.scrollTop = 0;
       scrollTarget = 0;
+      updateProgress(0);
+    };
+
+    const scrollToProgress = (progress) => {
+      const track = document.querySelector('.case-images');
+      const metrics = getProgressMetrics();
+
+      if (!track || !metrics) return;
+
+      const clamped = Math.min(1, Math.max(0, progress));
+      scrollTarget = metrics.maxScrollLeft * clamped;
+      track.scrollLeft = scrollTarget;
+      updateProgress(clamped);
     };
 
     const animateScroll = () => {
@@ -146,12 +210,20 @@ const getImageStyle = (image) => {
       controller = new AbortController();
 
       const track = document.querySelector('.case-images');
+      const main = document.querySelector('.case-main');
+      const thumb = document.querySelector('.case-progress-thumb');
+      const rail = document.querySelector('.case-progress');
 
       if (!track) return;
 
       if (rafId != null) {
         cancelAnimationFrame(rafId);
         rafId = undefined;
+      }
+
+      if (progressRafId != null) {
+        cancelAnimationFrame(progressRafId);
+        progressRafId = undefined;
       }
 
       const { signal } = controller;
@@ -179,9 +251,88 @@ const getImageStyle = (image) => {
           if (rafId == null) {
             rafId = requestAnimationFrame(animateScroll);
           }
+
+          if (progressRafId == null) {
+            progressRafId = requestAnimationFrame(syncProgress);
+          }
         },
         { passive: false, signal },
       );
+
+      track.addEventListener(
+        'scroll',
+        () => {
+          if (progressRafId != null) return;
+
+          progressRafId = requestAnimationFrame(syncProgress);
+        },
+        { signal },
+      );
+
+      thumb?.addEventListener(
+        'pointerdown',
+        (event) => {
+          const metrics = getProgressMetrics();
+
+          if (!metrics) return;
+
+          event.preventDefault();
+          thumb.setPointerCapture(event.pointerId);
+          main?.classList.add('is-dragging');
+
+          dragState = {
+            pointerId: event.pointerId,
+            startY: event.clientY,
+            startProgress: metrics.maxScrollLeft > 0 ? track.scrollLeft / metrics.maxScrollLeft : 0,
+          };
+        },
+        { signal },
+      );
+
+      rail?.addEventListener(
+        'pointerdown',
+        (event) => {
+          if (event.target === thumb) return;
+
+          const metrics = getProgressMetrics();
+          if (!metrics) return;
+
+          const rect = rail.getBoundingClientRect();
+          const localY = event.clientY - rect.top;
+          const progress = metrics.travel > 0 ? (localY - metrics.thumbHeight / 2) / metrics.travel : 0;
+
+          event.preventDefault();
+          scrollToProgress(progress);
+        },
+        { signal },
+      );
+
+      const handlePointerMove = (event) => {
+        if (!dragState || event.pointerId !== dragState.pointerId) return;
+
+        const metrics = getProgressMetrics();
+        if (!metrics) return;
+
+        const deltaY = event.clientY - dragState.startY;
+        const progressDelta = metrics.travel > 0 ? deltaY / metrics.travel : 0;
+
+        scrollToProgress(dragState.startProgress + progressDelta);
+      };
+
+      const handlePointerUp = (event) => {
+        if (!dragState || event.pointerId !== dragState.pointerId) return;
+
+        if (thumb?.hasPointerCapture(event.pointerId)) {
+          thumb.releasePointerCapture(event.pointerId);
+        }
+
+        main?.classList.remove('is-dragging');
+        dragState = undefined;
+      };
+
+      window.addEventListener('pointermove', handlePointerMove, { signal });
+      window.addEventListener('pointerup', handlePointerUp, { signal });
+      window.addEventListener('pointercancel', handlePointerUp, { signal });
     };
 
     const scheduleReset = () => {
@@ -191,7 +342,10 @@ const getImageStyle = (image) => {
     const setup = () => {
       bindTrack();
       observer?.disconnect();
-      observer = new ResizeObserver(() => updateTrackOffset());
+      observer = new ResizeObserver(() => {
+        updateTrackOffset();
+        syncProgress();
+      });
       const main = document.querySelector('.case-main');
 
       if (main) {
@@ -204,6 +358,7 @@ const getImageStyle = (image) => {
       if (track) {
         scrollTarget = track.scrollLeft;
       }
+      syncProgress();
       scheduleReset();
     };
 
@@ -272,6 +427,55 @@ const getImageStyle = (image) => {
 
   .case-images::-webkit-scrollbar {
     display: none;
+  }
+
+  .case-progress {
+    position: absolute;
+    top: clamp(1rem, 1.4vw, 1.25rem);
+    right: var(--pad);
+    bottom: clamp(1rem, 1.8vw, 1.6rem);
+    width: 0.22rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--line) 30%, transparent);
+    pointer-events: auto;
+    z-index: 2;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .case-progress-track {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: color-mix(in srgb, var(--line) 22%, transparent);
+    opacity: 0.65;
+  }
+
+  .case-progress-thumb {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100%;
+    border-radius: inherit;
+    background: color-mix(in srgb, var(--ink) 24%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent) inset;
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
+    will-change: transform, height;
+  }
+
+  .case-progress-thumb:active {
+    cursor: grabbing;
+  }
+
+  @media (hover: hover) {
+    .case-main:hover .case-progress,
+    .case-main.is-dragging .case-progress {
+      opacity: 1;
+    }
   }
 
   .case-figure {
@@ -406,6 +610,10 @@ const getImageStyle = (image) => {
       padding-right: var(--case-track-end, clamp(5rem, 8vw, 9rem));
       border-top: 0.5px solid var(--line);
       scroll-padding-inline-start: 0;
+    }
+
+    .case-progress {
+      display: none;
     }
 
     .case-figure img {
