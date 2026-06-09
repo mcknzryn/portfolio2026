@@ -1,4 +1,5 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
@@ -15,7 +16,10 @@ export async function getStaticPaths() {
   }));
 }
 
-const { project, previous, next } = Astro.props;
+type ProjectEntry = CollectionEntry<'projects'>;
+type ProjectImage = ProjectEntry['data']['images'][number];
+
+const { project, previous, next }: { project: ProjectEntry; previous: ProjectEntry; next: ProjectEntry } = Astro.props;
 
 const projectNumber = String(project.data.order + 1).padStart(2, '0');
 const client = project.data.client || 'Independent';
@@ -28,7 +32,7 @@ const galleryStyle = [
   .filter(Boolean)
   .join(' ');
 
-const getImageStyle = (image) => {
+const getImageStyle = (image: ProjectImage) => {
   const imageWidth = image.width || gallery.imageWidths?.[image.layout];
   const offsetY = image.offsetY;
 
@@ -89,14 +93,15 @@ const getImageStyle = (image) => {
   </article>
 
   <script>
-    let controller;
-    let observer;
-    let rafId;
+    let controller: AbortController | undefined;
+    let observer: ResizeObserver | undefined;
+    let rafId: number | undefined;
     let scrollTarget = 0;
+    let cleanup: () => void = () => {};
 
     const updateTrackOffset = () => {
-      const main = document.querySelector('.case-main');
-      const copy = document.querySelector('.case-copy');
+      const main = document.querySelector<HTMLElement>('.case-main');
+      const copy = document.querySelector<HTMLElement>('.case-copy');
 
       if (!main || !copy) return;
 
@@ -109,7 +114,7 @@ const getImageStyle = (image) => {
     };
 
     const resetTrack = () => {
-      const track = document.querySelector('.case-images');
+      const track = document.querySelector<HTMLElement>('.case-images');
 
       if (!track) return;
 
@@ -124,7 +129,7 @@ const getImageStyle = (image) => {
     };
 
     const animateScroll = () => {
-      const track = document.querySelector('.case-images');
+      const track = document.querySelector<HTMLElement>('.case-images');
 
       if (!track) return;
 
@@ -145,7 +150,7 @@ const getImageStyle = (image) => {
       controller?.abort();
       controller = new AbortController();
 
-      const track = document.querySelector('.case-images');
+      const track = document.querySelector<HTMLElement>('.case-images');
 
       if (!track) return;
 
@@ -188,27 +193,49 @@ const getImageStyle = (image) => {
       requestAnimationFrame(() => requestAnimationFrame(resetTrack));
     };
 
+    const teardown = () => {
+      cleanup();
+      cleanup = () => {};
+    };
+
     const setup = () => {
+      teardown();
+
       bindTrack();
       observer?.disconnect();
       observer = new ResizeObserver(() => updateTrackOffset());
-      const main = document.querySelector('.case-main');
+      const main = document.querySelector<HTMLElement>('.case-main');
 
       if (main) {
         observer.observe(main);
       }
 
       updateTrackOffset();
-      const track = document.querySelector('.case-images');
+      const track = document.querySelector<HTMLElement>('.case-images');
 
       if (track) {
         scrollTarget = track.scrollLeft;
       }
       scheduleReset();
+
+      cleanup = () => {
+        controller?.abort();
+        observer?.disconnect();
+
+        if (rafId != null) {
+          cancelAnimationFrame(rafId);
+          rafId = undefined;
+        }
+      };
     };
 
     document.addEventListener('astro:page-load', setup);
-    window.addEventListener('pageshow', setup);
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        setup();
+      }
+    });
+    document.addEventListener('astro:before-swap', teardown);
   </script>
 </BaseLayout>
 
