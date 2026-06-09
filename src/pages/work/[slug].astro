@@ -50,19 +50,16 @@ const getImageStyle = (image: ProjectImage) => {
     <section class="case-main" style={galleryStyle}>
       <aside class="case-copy" aria-label={`${project.data.title} project details`}>
         <div class="case-copy-block">
-          <p class="case-index">Order {projectNumber}</p>
+          <p class="case-index"> [{projectNumber}]</p>
           <h1 class="case-title">{project.data.title}</h1>
           <div class="case-details">
             <p>
-              <span class="case-detail-label">Discipline</span>
               <span>{project.data.discipline.join(', ')}</span>
             </p>
             <p>
-              <span class="case-detail-label">Year</span>
               <span>{project.data.year}</span>
             </p>
             <p>
-              <span class="case-detail-label">Client</span>
               <span>{client}</span>
             </p>
           </div>
