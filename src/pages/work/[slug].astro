@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -16,7 +16,6 @@ export async function getStaticPaths() {
 }
 
 const { project, previous, next } = Astro.props;
-const { Content } = await render(project);
 
 const projectNumber = String(project.data.order + 1).padStart(2, '0');
 const client = project.data.client || 'Independent';
@@ -27,48 +26,29 @@ const client = project.data.client || 'Independent';
     <section class="case-main">
       <aside class="case-copy" aria-label={`${project.data.title} project details`}>
         <div class="case-copy-block">
-          <p class="case-index">({projectNumber})</p>
+          <p class="case-index">Order {projectNumber}</p>
           <h1 class="case-title">{project.data.title}</h1>
-          <p class="case-disciplines">{project.data.discipline.join(', ')}</p>
-          <p class="case-summary">{project.data.summary}</p>
-          <div class="case-meta">
-            <p>{client}</p>
-            <p>{project.data.year}</p>
-          </div>
-        </div>
-
-        <div class="case-copy-block">
-          <p class="case-kicker">Notes</p>
-          <p class="case-panel-copy">
-            A quieter page for slower image reading, with the text held in a fixed left rail while the image sequence moves independently to the right.
-          </p>
-          <div class="case-notes">
-            <Content />
-          </div>
-        </div>
-
-        <div class="case-copy-block case-copy-block--meta">
-          <p class="case-kicker">Selected frame</p>
           <div class="case-details">
             <p>
-              <span class="case-detail-label">Client</span>
-              <span>{client}</span>
+              <span class="case-detail-label">Discipline</span>
+              <span>{project.data.discipline.join(', ')}</span>
             </p>
             <p>
               <span class="case-detail-label">Year</span>
               <span>{project.data.year}</span>
             </p>
             <p>
-              <span class="case-detail-label">Discipline</span>
-              <span>{project.data.discipline.join(', ')}</span>
+              <span class="case-detail-label">Client</span>
+              <span>{client}</span>
             </p>
           </div>
+          <p class="case-summary">{project.data.summary}</p>
         </div>
       </aside>
 
       <section class="case-images" aria-label={`${project.data.title} imagery`}>
         {project.data.images.map((image, index) => (
-          <figure class:list={['case-figure', `case-figure--${image.layout}`, index === 0 && 'case-figure--first']}>
+          <figure class:list={['case-figure', `case-figure--${image.layout}`]}>
             <img src={image.src} alt={image.alt} loading={index === 0 ? 'eager' : 'lazy'} />
           </figure>
         ))}
@@ -76,11 +56,6 @@ const client = project.data.client || 'Independent';
     </section>
 
     <footer class="case-footer" aria-label="Project navigation">
-      <div class="case-footer-meta">
-        <p class="case-kicker">{client}</p>
-        <p class="case-footer-year">{project.data.year}</p>
-      </div>
-
       <a class="case-footer-link case-footer-link--prev" href={`/work/${previous.id}`}>
         Previous project
       </a>
@@ -95,14 +70,55 @@ const client = project.data.client || 'Independent';
 
   <script>
     let controller;
+    let observer;
+    let rafId;
+    let scrollTarget = 0;
+
+    const updateTrackOffset = () => {
+      const main = document.querySelector('.case-main');
+      const copy = document.querySelector('.case-copy');
+
+      if (!main || !copy) return;
+
+      const styles = getComputedStyle(main);
+      const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+      const overlap = parseFloat(styles.getPropertyValue('--case-track-overlap')) || 0;
+      const offset = Math.max(0, copy.getBoundingClientRect().width + gap - overlap * 0.65);
+
+      main.style.setProperty('--case-track-offset', `${offset}px`);
+    };
 
     const resetTrack = () => {
       const track = document.querySelector('.case-images');
 
       if (!track) return;
 
+      if (rafId != null) {
+        cancelAnimationFrame(rafId);
+        rafId = undefined;
+      }
+
       track.scrollLeft = 0;
       track.scrollTop = 0;
+      scrollTarget = 0;
+    };
+
+    const animateScroll = () => {
+      const track = document.querySelector('.case-images');
+
+      if (!track) return;
+
+      const current = track.scrollLeft;
+      const delta = scrollTarget - current;
+
+      if (Math.abs(delta) < 0.35) {
+        track.scrollLeft = scrollTarget;
+        rafId = undefined;
+        return;
+      }
+
+      track.scrollLeft = current + delta * 0.14;
+      rafId = requestAnimationFrame(animateScroll);
     };
 
     const bindTrack = () => {
@@ -113,6 +129,11 @@ const client = project.data.client || 'Independent';
 
       if (!track) return;
 
+      if (rafId != null) {
+        cancelAnimationFrame(rafId);
+        rafId = undefined;
+      }
+
       const { signal } = controller;
 
       track.addEventListener(
@@ -120,21 +141,24 @@ const client = project.data.client || 'Independent';
         (event) => {
           const hasHorizontalIntent = Math.abs(event.deltaX) > Math.abs(event.deltaY);
 
-          if (hasHorizontalIntent) return;
-
-          const maxScrollLeft = track.scrollWidth - track.clientWidth;
-          const canScroll = maxScrollLeft > 0;
-          const movingRight = event.deltaY > 0;
-          const movingLeft = event.deltaY < 0;
-          const atStart = track.scrollLeft <= 0;
-          const atEnd = track.scrollLeft >= maxScrollLeft - 1;
-
-          if (!canScroll || (movingLeft && atStart) || (movingRight && atEnd)) {
+          if (hasHorizontalIntent) {
             return;
           }
 
+          const maxScrollLeft = track.scrollWidth - track.clientWidth;
+          const canScroll = maxScrollLeft > 0;
+          if (!canScroll) return;
+
           event.preventDefault();
-          track.scrollLeft += event.deltaY;
+
+          const direction = event.deltaY !== 0 ? event.deltaY : event.deltaX;
+          const nextTarget = scrollTarget + direction * 0.9;
+
+          scrollTarget = Math.min(maxScrollLeft, Math.max(0, nextTarget));
+
+          if (rafId == null) {
+            rafId = requestAnimationFrame(animateScroll);
+          }
         },
         { passive: false, signal },
       );
@@ -146,6 +170,20 @@ const client = project.data.client || 'Independent';
 
     const setup = () => {
       bindTrack();
+      observer?.disconnect();
+      observer = new ResizeObserver(() => updateTrackOffset());
+      const main = document.querySelector('.case-main');
+
+      if (main) {
+        observer.observe(main);
+      }
+
+      updateTrackOffset();
+      const track = document.querySelector('.case-images');
+
+      if (track) {
+        scrollTarget = track.scrollLeft;
+      }
       scheduleReset();
     };
 
@@ -169,6 +207,7 @@ const client = project.data.client || 'Independent';
     gap: clamp(1rem, 1.8vw, 1.8rem);
     height: 100%;
     min-height: 0;
+    --case-track-overlap: clamp(0.4rem, 0.8vw, 0.85rem);
   }
 
   .case-copy {
@@ -178,7 +217,6 @@ const client = project.data.client || 'Independent';
     align-content: start;
     gap: clamp(1.2rem, 1.8vw, 2rem);
     padding: clamp(1rem, 1.4vw, 1.25rem) 0 clamp(1rem, 1.8vw, 1.6rem) var(--pad);
-    overflow: auto;
     min-height: 0;
     background: transparent;
   }
@@ -189,23 +227,20 @@ const client = project.data.client || 'Independent';
     max-width: 22rem;
   }
 
-  .case-copy-block--meta {
-    padding-top: 0.35rem;
-    border-top: 0.5px solid var(--line);
-  }
-
   .case-images {
     position: absolute;
     inset: 0;
     z-index: 0;
     display: flex;
+    align-items: flex-start;
     height: 100%;
     min-width: 0;
+    padding-left: var(--case-track-offset, 0px);
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-snap-type: x proximity;
+    scroll-snap-type: none;
     scroll-behavior: auto;
-    scroll-padding-inline: 0;
+    scroll-padding-inline-start: var(--case-track-offset, 0px);
     scrollbar-width: none;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
@@ -216,12 +251,12 @@ const client = project.data.client || 'Independent';
   }
 
   .case-figure {
-    flex: 0 0 100%;
-    min-width: 100%;
-    height: 100%;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 0;
+    height: auto;
     margin: 0;
     padding: clamp(1rem, 1.4vw, 1.25rem) var(--pad) clamp(1rem, 1.8vw, 1.6rem);
-    scroll-snap-align: start;
   }
 
   .case-index {
@@ -242,18 +277,7 @@ const client = project.data.client || 'Independent';
     text-transform: uppercase;
   }
 
-  .case-disciplines {
-    margin: 0;
-    max-width: 20ch;
-    font-size: clamp(0.82rem, 0.9vw, 0.92rem);
-    font-weight: 700;
-    line-height: 1;
-    text-transform: uppercase;
-  }
-
-  .case-summary,
-  .case-panel-copy,
-  .case-notes :global(p) {
+  .case-summary {
     margin: 0;
     max-width: 24rem;
     color: #afafaf;
@@ -261,13 +285,6 @@ const client = project.data.client || 'Independent';
     line-height: 1.26;
   }
 
-  .case-meta {
-    display: grid;
-    gap: 0.2rem;
-    margin-top: clamp(0.6rem, 1vw, 1rem);
-  }
-
-  .case-meta p,
   .case-details p {
     margin: 0;
     display: flex;
@@ -283,64 +300,37 @@ const client = project.data.client || 'Independent';
     color: var(--ink);
   }
 
-  .case-notes {
-    display: grid;
-    gap: 1rem;
-    max-width: 22rem;
-  }
-
-  .case-details {
-    display: grid;
-    gap: 0.45rem;
-    padding-top: 0.35rem;
-    border-top: 0.5px solid var(--line);
-  }
-
   .case-figure img {
-    width: 100%;
-    height: 100%;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(78vw, 72rem);
     max-height: calc(100dvh - 7rem);
-    object-fit: cover;
-    border: 0.5px solid var(--line);
-    background: #f4f4f4;
-  }
-
-  .case-figure--first {
-    padding-left: var(--pad);
+    object-fit: contain;
+    border: 0;
+    background: transparent;
   }
 
   .case-figure--full img {
-    object-fit: cover;
+    max-width: min(86vw, 78rem);
   }
 
   .case-figure--wide img {
-    object-fit: cover;
+    max-width: min(64vw, 58rem);
   }
 
   .case-figure--narrow img {
-    object-fit: contain;
-    background: #f7f7f7;
+    max-width: min(38vw, 32rem);
+    background: transparent;
   }
 
   .case-footer {
     display: grid;
-    grid-template-columns: minmax(10rem, 0.95fr) minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: end;
     gap: 0.85rem;
     padding: 0.6rem var(--pad) 0.9rem;
     border-top: 0.5px solid var(--line);
-  }
-
-  .case-footer-meta {
-    display: grid;
-    gap: 0.1rem;
-  }
-
-  .case-footer-year {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.72rem;
-    text-transform: uppercase;
   }
 
   .case-footer-link {
@@ -370,14 +360,6 @@ const client = project.data.client || 'Independent';
       text-decoration: underline;
       text-underline-offset: 0.18em;
     }
-
-    .case-figure img {
-      transition: transform 320ms ease, box-shadow 320ms ease;
-    }
-
-    .case-figure:hover img {
-      transform: scale(1.01);
-    }
   }
 
   @media (max-width: 980px) {
@@ -394,14 +376,21 @@ const client = project.data.client || 'Independent';
       position: relative;
       min-height: 34rem;
       order: 2;
+      padding-left: 0;
       border-top: 0.5px solid var(--line);
+      scroll-padding-inline-start: 0;
     }
 
     .case-figure img {
-      height: auto;
-      min-height: 28rem;
-      max-height: none;
-      aspect-ratio: 16 / 10;
+      width: auto;
+      max-width: min(88vw, 72rem);
+      max-height: calc(100dvh - 9rem);
+    }
+
+    .case-figure--full img,
+    .case-figure--wide img,
+    .case-figure--narrow img {
+      max-width: min(88vw, 72rem);
     }
 
     .case-footer {
