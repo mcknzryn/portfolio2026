@@ -2,7 +2,7 @@
 title: "Skurnik Wine & Spirits"
 year: "2026"
 client: "Skurnik"
-discipline: ["Graphic Design", "Production", "Photography"]
+discipline: ["Design", "Production", "Photography"]
 summary: "A visual research prototype for cataloging site visits, material references, and production observations."
 order: 2
 heroImage: "/images/wine-spirits-hero.jpg"

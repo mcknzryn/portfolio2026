@@ -2,7 +2,7 @@
 title: "in italia, cara italia"
 year: "2024"
 client: ""
-discipline: ["Graphic Design", "Book Making", "Photography", "Collage"]
+discipline: ["Design", "Editorial", "Publishing", "Photography"]
 summary: "A visual research prototype for cataloging site visits, material references, and production observations."
 order: 1
 heroImage: "/images/cara-italia-hero.png"
