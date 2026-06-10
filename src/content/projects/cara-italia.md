@@ -6,6 +6,8 @@ discipline: ["Design", "Editorial", "Publishing", "Photography"]
 summary: "A visual research prototype for cataloging site visits, material references, and production observations."
 order: 1
 heroImage: "/images/cara-italia-hero.png"
+homePreviewWidth: "clamp(10rem, 12.5vw, 13rem)"
+homePreviewLift: "clamp(0.3rem, 1.6vw, 1rem)"
 gallery:
   trackGap: "clamp(3.75rem, 5.5vw, 6.75rem)"
   trackInset: "clamp(1.2rem, 1.6vw, 2rem)"

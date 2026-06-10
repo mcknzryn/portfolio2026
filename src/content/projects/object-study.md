@@ -6,6 +6,8 @@ discipline: ["Creative Direction", "Interaction", "Photography"]
 summary: "A restrained product narrative where object studies, production notes, and interaction states share the same visual language."
 order: 3
 heroImage: "/images/object-hero.svg"
+homePreviewWidth: "clamp(9rem, 11.5vw, 12rem)"
+homePreviewLift: "clamp(0.2rem, 1.3vw, 0.9rem)"
 gallery:
   trackGap: "clamp(3.25rem, 4.8vw, 5.75rem)"
   trackInset: "clamp(1rem, 1.35vw, 1.65rem)"

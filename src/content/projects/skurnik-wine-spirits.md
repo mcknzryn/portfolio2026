@@ -6,6 +6,8 @@ discipline: ["Design", "Production", "Photography"]
 summary: "A visual research prototype for cataloging site visits, material references, and production observations."
 order: 2
 heroImage: "/images/wine-spirits-hero.jpg"
+homePreviewWidth: "clamp(8.25rem, 10vw, 11rem)"
+homePreviewLift: "clamp(0.15rem, 1vw, 0.75rem)"
 gallery:
   trackGap: "clamp(3.5rem, 5vw, 6rem)"
   trackInset: "clamp(1rem, 1.4vw, 1.8rem)"

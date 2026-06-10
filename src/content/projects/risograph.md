@@ -6,6 +6,8 @@ discipline: ["Creative Direction", "Print Making", "Photography"]
 summary: "A restrained product narrative where object studies, production notes, and interaction states share the same visual language."
 order: 4
 heroImage: "/images/risograph-hero.png"
+homePreviewWidth: "clamp(8.5rem, 10.5vw, 11.25rem)"
+homePreviewLift: "clamp(0.1rem, 0.9vw, 0.65rem)"
 gallery:
   trackGap: "clamp(3.25rem, 4.8vw, 5.75rem)"
   trackInset: "clamp(1rem, 1.35vw, 1.65rem)"

@@ -1,8 +1,22 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+type ProjectEntry = CollectionEntry<'projects'>;
+
+const getProjectPreviewStyle = (project: ProjectEntry) => {
+  const width = project.data.homePreviewWidth;
+  const lift = project.data.homePreviewLift;
+
+  return [
+    width ? `--photo-width: ${width};` : '',
+    lift ? `--lift: ${lift};` : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
 ---
 
 <BaseLayout title="McKenzie Hoffman">
@@ -13,7 +27,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
         const number = String(project.data.order + 1).padStart(2, '0');
 
         return (
-          <li class:list={['project-item', `project-item-${index + 1}`]}>
+          <li class:list={['project-item', `project-item-${index + 1}`]} style={getProjectPreviewStyle(project)}>
             <a class="project-link" href={`/work/${project.id}`} aria-label={`${number} ${project.data.title}`}>
               <span class="project-number" aria-hidden="true">
                 {number}
@@ -41,9 +55,10 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   .project-index {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(1.25rem, 3vw, 3rem) clamp(1rem, 2vw, 2rem);
+    row-gap: 0;
+    column-gap: clamp(1rem, 2vw, 2rem);
     margin: clamp(-10rem, -12vh, -10rem) 0 0;
-    padding: 0;
+    padding: 0 0 0 clamp(1rem, 3vw, 3.5rem);
     list-style: none;
     align-items: end;
   }
@@ -51,20 +66,6 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   .project-item {
     --lift: 0px;
     --photo-width: clamp(11.5rem, 16vw, 16rem);
-  }
-
-  .project-item:nth-child(2n) {
-    --lift: clamp(0.75rem, 4vw, 3rem);
-    --photo-width: clamp(13rem, 18vw, 19rem);
-  }
-
-  .project-item:nth-child(3n) {
-    --lift: clamp(0.25rem, 2.2vw, 1.5rem);
-    --photo-width: clamp(10.5rem, 14vw, 14.5rem);
-  }
-
-  .project-item:nth-child(4n) {
-    --photo-width: clamp(14rem, 19vw, 21rem);
   }
 
   .project-link {
@@ -110,7 +111,9 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
     .project-index {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 0;
       margin-top: 0;
+      padding-left: clamp(0.75rem, 2vw, 1.5rem);
     }
 
     .project-link {
@@ -121,6 +124,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   @media (max-width: 640px) {
     .project-index {
       grid-template-columns: 1fr;
+      padding-left: 0;
     }
 
     .project-link {
