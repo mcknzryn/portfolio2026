@@ -51,16 +51,16 @@ const getImageStyle = (image: ProjectImage) => {
     <section class="case-main" style={galleryStyle}>
       <aside class="case-copy" aria-label={`${project.data.title} project details`}>
         <div class="case-copy-block">
-          <p class="case-index"> [{projectNumber}]</p>
+          <p class="case-index metadata">[{projectNumber}]</p>
           <h1 class="case-title">{project.data.title}</h1>
           <div class="case-details">
-            <p>
+            <p class="metadata">
               <span>{project.data.discipline.join(', ')}</span>
             </p>
-            <p>
+            <p class="metadata">
               <span>{project.data.year}</span>
             </p>
-            <p>
+            <p class="metadata">
               <span>{client}</span>
             </p>
           </div>
@@ -70,7 +70,7 @@ const getImageStyle = (image: ProjectImage) => {
 
       <section class="case-images" aria-label={`${project.data.title} imagery`}>
         {project.data.images.map((image, index) => (
-          <figure class:list={['case-figure', `case-figure--${image.layout}`]} style={getImageStyle(image)}>
+          <figure class="case-figure" style={getImageStyle(image)}>
             <img src={image.src} alt={image.alt} loading={index === 0 ? 'eager' : 'lazy'} />
           </figure>
         ))}
@@ -83,7 +83,7 @@ const getImageStyle = (image: ProjectImage) => {
         Previous project
       </a>
 
-      <span class="case-footer-counter" aria-label={`Project ${projectNumber}`}>[{projectNumber}]</span>
+      <span class="case-footer-counter metadata" aria-label={`Project ${projectNumber}`}>[{projectNumber}]</span>
 
       <a class="case-footer-link case-footer-link--next" href={`/work/${next.id}`}>
         Next project
@@ -328,7 +328,6 @@ const getImageStyle = (image: ProjectImage) => {
 
   .case-index {
     margin: 0;
-    color: var(--muted);
     font-size: clamp(0.85rem, 1.1vw, 1rem);
     line-height: 1;
   }
@@ -353,18 +352,9 @@ const getImageStyle = (image: ProjectImage) => {
   }
 
   .case-details p {
-    margin: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
-    color: var(--muted);
-    font-size: clamp(0.7rem, 0.78vw, 0.82rem);
-    line-height: 1.35;
-    text-transform: uppercase;
-  }
-
-  .case-detail-label {
-    color: var(--ink);
   }
 
   .case-figure img {
@@ -375,19 +365,6 @@ const getImageStyle = (image: ProjectImage) => {
     max-height: calc(100dvh - 7rem);
     object-fit: contain;
     border: 0;
-    background: transparent;
-  }
-
-  .case-figure--full img {
-    max-width: none;
-  }
-
-  .case-figure--wide img {
-    max-width: none;
-  }
-
-  .case-figure--narrow img {
-    max-width: none;
     background: transparent;
   }
 

@@ -13,10 +13,10 @@ const { projects } = Astro.props;
   {projects.map((project) => (
     <a class="project-row" href={`/work/${project.id}`}>
       <span class="project-row-main">
-        <span class="project-number">{`[${formatProjectNumber(project.data.order)}]`}</span>
-        <span class="project-year">{project.data.year}</span>
+        <span class="project-number metadata">{`[${formatProjectNumber(project.data.order)}]`}</span>
+        <span class="project-year metadata">{project.data.year}</span>
         <span class="project-title">{project.data.title}</span>
-        <span class="project-meta">{project.data.discipline.join(', ')}</span>
+        <span class="project-meta metadata">{project.data.discipline.join(', ')}</span>
       </span>
       <span class="project-gallery" aria-hidden="true">
         {project.data.images.slice(0, 3).map((image) => (
@@ -62,22 +62,13 @@ const { projects } = Astro.props;
     text-wrap: pretty;
   }
 
-  .project-meta,
-  .project-year,
-  .project-number {
-    color: var(--muted);
-    font-size: clamp(0.7rem, 0.85vw, 0.86rem);
-    line-height: 1.35;
-    text-transform: uppercase;
-  }
-
   .project-year {
     text-align: left;
   }
 
-  .project-number {
-    color: var(--muted);
+  .project-number.metadata {
     font-size: clamp(0.6rem, 0.68vw, 0.72rem);
+    line-height: 1;
   }
 
   .project-gallery {
