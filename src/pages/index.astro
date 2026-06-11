@@ -9,10 +9,16 @@ type ProjectEntry = CollectionEntry<'projects'>;
 const getProjectPreviewStyle = (project: ProjectEntry) => {
   const width = project.data.homePreviewWidth;
   const lift = project.data.homePreviewLift;
+  const shiftX = project.data.homePreviewTranslateX;
+  const rotate = project.data.homePreviewRotate;
+  const scale = project.data.homePreviewScale;
 
   return [
     width ? `--photo-width: ${width};` : '',
     lift ? `--lift: ${lift};` : '',
+    shiftX ? `--shift-x: ${shiftX};` : '',
+    rotate ? `--rotate: ${rotate};` : '',
+    scale ? `--scale: ${scale};` : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -75,6 +81,9 @@ const getProjectPreviewStyle = (project: ProjectEntry) => {
 
   .project-item {
     --lift: 0px;
+    --shift-x: 0px;
+    --rotate: 0deg;
+    --scale: 1;
     --photo-width: clamp(9rem, 12vw, 13rem);
     scroll-snap-align: start;
   }
@@ -86,7 +95,9 @@ const getProjectPreviewStyle = (project: ProjectEntry) => {
     max-width: 100%;
     margin-inline: auto;
     text-decoration: none;
-    transform: translateY(var(--lift));
+    transform-origin: center bottom;
+    transform: translate3d(var(--shift-x), var(--lift), 0) rotate(var(--rotate)) scale(var(--scale));
+    will-change: transform;
   }
 
   .project-number {

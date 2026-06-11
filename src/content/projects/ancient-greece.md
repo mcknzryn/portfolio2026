@@ -8,6 +8,9 @@ order: 0
 heroImage: "/images/anc-greece-hero.jpg"
 homePreviewWidth: "clamp(9.5rem, 11.5vw, 12rem)"
 homePreviewLift: "clamp(0.15rem, 1.2vw, 0.8rem)"
+homePreviewTranslateX: "clamp(0.15rem, 0.35vw, 0.45rem)"
+homePreviewRotate: "clamp(-1.1deg, -0.6vw, -0.35deg)"
+homePreviewScale: "0.98"
 gallery:
   trackGap: "clamp(3.25rem, 4.8vw, 5.75rem)"
   trackInset: "clamp(1rem, 1.35vw, 1.7rem)"

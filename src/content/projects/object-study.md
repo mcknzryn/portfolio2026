@@ -8,6 +8,9 @@ order: 3
 heroImage: "/images/object-hero.svg"
 homePreviewWidth: "clamp(9rem, 11.5vw, 12rem)"
 homePreviewLift: "clamp(0.2rem, 1.3vw, 0.9rem)"
+homePreviewTranslateX: "clamp(-0.25rem, -0.35vw, -0.05rem)"
+homePreviewRotate: "clamp(0.35deg, 0.25vw, 0.7deg)"
+homePreviewScale: "0.975"
 gallery:
   trackGap: "clamp(3.25rem, 4.8vw, 5.75rem)"
   trackInset: "clamp(1rem, 1.35vw, 1.65rem)"

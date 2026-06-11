@@ -8,6 +8,9 @@ order: 2
 heroImage: "/images/wine-spirits-hero.jpg"
 homePreviewWidth: "clamp(8.25rem, 10vw, 11rem)"
 homePreviewLift: "clamp(0.15rem, 1vw, 0.75rem)"
+homePreviewTranslateX: "clamp(0.1rem, 0.25vw, 0.4rem)"
+homePreviewRotate: "clamp(-0.9deg, -0.45vw, -0.25deg)"
+homePreviewScale: "0.95"
 gallery:
   trackGap: "clamp(3.5rem, 5vw, 6rem)"
   trackInset: "clamp(1rem, 1.4vw, 1.8rem)"

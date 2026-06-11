@@ -13,6 +13,9 @@ const projects = defineCollection({
     heroImage: z.string(),
     homePreviewWidth: z.string().optional(),
     homePreviewLift: z.string().optional(),
+    homePreviewTranslateX: z.string().optional(),
+    homePreviewRotate: z.string().optional(),
+    homePreviewScale: z.string().optional(),
     images: z.array(
       z.object({
         src: z.string(),
