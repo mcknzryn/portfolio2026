@@ -7,29 +7,12 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 ---
 
 <BaseLayout title="Work | M. Hoffman">
-  <section class="page work-hero">
-    <h1 class="work-heading">Projects</h1>
-  </section>
-
   <section class="page work-list" aria-label="Project list">
     <ProjectRows projects={projects} />
   </section>
 </BaseLayout>
 
 <style>
-  .work-hero {
-    padding: clamp(1.1rem, 2vw, 1.75rem) 0 clamp(0.5rem, 1vw, 1rem);
-  }
-
-  .work-heading {
-    margin: 0;
-    font-family: var(--grotesk);
-    font-size: clamp(1.1rem, 1.6vw, 1.8rem);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
   .work-list {
     padding-top: clamp(1.5rem, 3vw, 2.5rem);
     padding-bottom: clamp(4rem, 8vw, 8rem);
