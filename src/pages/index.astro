@@ -1,12 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import type { CollectionEntry } from 'astro:content';
+import { formatProjectNumber } from '../lib/formatProjectNumber';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-type ProjectEntry = CollectionEntry<'projects'>;
-
-const getProjectPreviewStyle = (project: ProjectEntry) => {
+const getProjectPreviewStyle = (project: (typeof projects)[number]) => {
   const width = project.data.homePreviewWidth;
   const lift = project.data.homePreviewLift;
   const shiftX = project.data.homePreviewTranslateX;
@@ -29,10 +27,10 @@ const getProjectPreviewStyle = (project: ProjectEntry) => {
   <section class="home page" aria-label="Selected projects">
     <ol class="project-index" aria-label="Project index">
       {projects.map((project, index) => {
-        const number = String(project.data.order + 1).padStart(2, '0');
+        const number = formatProjectNumber(project.data.order);
 
         return (
-          <li class:list={['project-item', `project-item-${index + 1}`]} style={getProjectPreviewStyle(project)}>
+          <li class="project-item" style={getProjectPreviewStyle(project)}>
             <a class="project-link" href={`/work/${project.id}`} aria-label={`${number} ${project.data.title}`}>
               <span class="project-number" aria-hidden="true">
                 {number}

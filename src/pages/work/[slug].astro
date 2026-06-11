@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatProjectNumber } from '../../lib/formatProjectNumber';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -21,8 +22,8 @@ type ProjectImage = ProjectEntry['data']['images'][number];
 
 const { project, previous, next }: { project: ProjectEntry; previous: ProjectEntry; next: ProjectEntry } = Astro.props;
 
-const projectNumber = String(project.data.order + 1).padStart(2, '0');
-const client = project.data.client || 'Independent';
+const projectNumber = formatProjectNumber(project.data.order);
+const client = project.data.client;
 const gallery = project.data.gallery || {};
 const galleryStyle = [
   gallery.trackGap ? `--case-track-gap: ${gallery.trackGap};` : '',
