@@ -33,12 +33,21 @@ const { projects, showPreview = false } = Astro.props;
           <span class="project-client">{project.data.client}</span>
         </>
       ) : (
-        <span class="project-row-main">
-          <span class="project-number">{`[${String(project.data.order + 1).padStart(2, '0')}]`}</span>
-          <span class="project-year">{project.data.year}</span>
-          <span class="project-title">{project.data.title}</span>
-          <span class="project-meta">{project.data.discipline.join(', ')}</span>
-        </span>
+        <>
+          <span class="project-row-main">
+            <span class="project-number">{`[${String(project.data.order + 1).padStart(2, '0')}]`}</span>
+            <span class="project-year">{project.data.year}</span>
+            <span class="project-title">{project.data.title}</span>
+            <span class="project-meta">{project.data.discipline.join(', ')}</span>
+          </span>
+          <span class="project-gallery" aria-hidden="true">
+            {project.data.images.slice(0, 3).map((image) => (
+              <span class="project-shot">
+                <img src={image.src} alt="" loading="lazy" />
+              </span>
+            ))}
+          </span>
+        </>
       )}
     </a>
   ))}
@@ -46,14 +55,18 @@ const { projects, showPreview = false } = Astro.props;
 
 <style>
   .project-rows {
-    border-top: 0.5px solid var(--line);
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    width: min(100%, 1320px);
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 3vw, 4rem);
   }
 
   .project-row {
-    display: block;
-    min-height: clamp(3.6rem, 6vw, 5rem);
-    padding: clamp(0.7rem, 1.2vw, 1.1rem) 0;
-    border-bottom: 0.5px solid var(--line);
+    display: grid;
+    gap: clamp(0.9rem, 1.8vw, 1.5rem);
+    min-height: 0;
+    padding: 0;
     text-decoration: none;
   }
 
@@ -68,19 +81,10 @@ const { projects, showPreview = false } = Astro.props;
     transition: opacity 180ms ease;
   }
 
-  .project-rows:has(.home-preview) {
-    display: grid;
-    gap: 0;
-    width: min(100%, 1320px);
-    margin: 0 auto;
-    padding: 0 clamp(1rem, 3vw, 4rem);
-    border-top: 0.5px solid var(--line);
-  }
-
   .project-row-main {
     display: grid;
     grid-template-columns: 3.75rem 4.5rem minmax(0, 1.7fr) minmax(12rem, 0.95fr);
-    gap: clamp(0.75rem, 2vw, 2rem);
+    gap: clamp(1rem, 2.2vw, 2.75rem);
     align-items: baseline;
   }
 
@@ -104,7 +108,7 @@ const { projects, showPreview = false } = Astro.props;
   .project-year,
   .project-number {
     color: var(--muted);
-    font-size: clamp(0.72rem, 0.88vw, 0.88rem);
+    font-size: clamp(0.7rem, 0.85vw, 0.86rem);
     line-height: 1.35;
     text-transform: uppercase;
   }
@@ -155,6 +159,25 @@ const { projects, showPreview = false } = Astro.props;
     font-size: clamp(0.6rem, 0.68vw, 0.72rem);
     line-height: 1.4;
     text-transform: uppercase;
+  }
+
+  .project-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1vw, 0.9rem);
+  }
+
+  .project-shot {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #f3f3f3;
+  }
+
+  .project-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 360ms ease, opacity 220ms ease;
   }
 
   .project-summary,
@@ -219,6 +242,12 @@ const { projects, showPreview = false } = Astro.props;
     .project-row.home-preview:focus-visible .project-thumb img {
       transform: scale(1.03);
     }
+
+    .project-row:hover .project-shot img,
+    .project-row:focus-visible .project-shot img {
+      transform: scale(1.03);
+      opacity: 0.9;
+    }
   }
 
   @media (max-width: 760px) {
@@ -226,10 +255,6 @@ const { projects, showPreview = false } = Astro.props;
     .project-row.home-preview {
       grid-template-columns: 1fr;
       gap: 0.85rem;
-    }
-
-    .project-rows:has(.home-preview) {
-      padding: 0;
     }
 
     .project-row {
@@ -257,6 +282,14 @@ const { projects, showPreview = false } = Astro.props;
 
     .project-meta-group span:nth-child(2) {
       text-align: right;
+    }
+
+    .project-gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .project-shot:nth-child(3) {
+      display: none;
     }
 
     .project-summary,

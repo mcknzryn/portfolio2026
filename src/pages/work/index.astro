@@ -18,8 +18,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
 <style>
   .work-hero {
-    padding: clamp(1.1rem, 2vw, 1.75rem) 0 clamp(1.25rem, 2.5vw, 2rem);
-    border-bottom: 0.5px solid var(--line);
+    padding: clamp(1.1rem, 2vw, 1.75rem) 0 clamp(0.5rem, 1vw, 1rem);
   }
 
   .work-heading {
@@ -32,6 +31,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   }
 
   .work-list {
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
     padding-bottom: clamp(4rem, 8vw, 8rem);
   }
 </style>
