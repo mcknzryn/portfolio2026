@@ -21,7 +21,6 @@ const getProjectPreviewStyle = (project: ProjectEntry) => {
 
 <BaseLayout title="McKenzie Hoffman">
   <section class="home page" aria-label="Selected projects">
-
     <ol class="project-index" aria-label="Project index">
       {projects.map((project, index) => {
         const number = String(project.data.order + 1).padStart(2, '0');
@@ -48,24 +47,50 @@ const getProjectPreviewStyle = (project: ProjectEntry) => {
     display: grid;
     min-height: calc(100svh - 3rem);
     align-content: center;
-    gap: clamp(2rem, 6vw, 5rem);
+    gap: clamp(2.5rem, 7vw, 6rem);
     padding: clamp(1.5rem, 3vw, 2.25rem) 0 clamp(1.5rem, 3vw, 2.25rem);
   }
 
   .project-index {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    row-gap: 0;
-    column-gap: clamp(1rem, 2vw, 2rem);
-    margin: clamp(-10rem, -12vh, -10rem) 0 0;
-    padding: 0 0 0 clamp(1rem, 3vw, 3.5rem);
-    list-style: none;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(12.5rem, 15vw, 17rem);
     align-items: end;
+    gap: clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 3vw, 3rem);
+    margin: 0;
+    padding: 0 clamp(1.25rem, 4vw, 4.5rem);
+    list-style: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: clamp(1.25rem, 4vw, 4.5rem);
+    margin-top: clamp(-10rem, -12vh, -10rem);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .project-index::-webkit-scrollbar {
+    display: none;
   }
 
   .project-item {
     --lift: 0px;
-    --photo-width: clamp(11.5rem, 16vw, 16rem);
+    --photo-width: clamp(9rem, 12vw, 13rem);
+    scroll-snap-align: start;
+  }
+
+  .project-item:nth-child(2n) {
+    --lift: clamp(0.5rem, 3vw, 2rem);
+    --photo-width: clamp(10rem, 13.5vw, 14rem);
+  }
+
+  .project-item:nth-child(3n) {
+    --lift: clamp(0.2rem, 1.8vw, 1.1rem);
+    --photo-width: clamp(8.25rem, 10.5vw, 11.5rem);
+  }
+
+  .project-item:nth-child(4n) {
+    --photo-width: clamp(11rem, 14.5vw, 15rem);
   }
 
   .project-link {
@@ -110,25 +135,24 @@ const getProjectPreviewStyle = (project: ProjectEntry) => {
     }
 
     .project-index {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: 0;
+      grid-auto-columns: clamp(11.5rem, 30vw, 14.5rem);
       margin-top: 0;
-      padding-left: clamp(0.75rem, 2vw, 1.5rem);
-    }
-
-    .project-link {
-      transform: none;
+      gap: clamp(1.25rem, 3.5vw, 3rem) clamp(1.25rem, 2.5vw, 2rem);
+      padding-inline: clamp(0.9rem, 2.5vw, 2rem);
+      scroll-padding-inline: clamp(0.9rem, 2.5vw, 2rem);
     }
   }
 
   @media (max-width: 640px) {
     .project-index {
-      grid-template-columns: 1fr;
-      padding-left: 0;
+      grid-auto-columns: clamp(10rem, 68vw, 12.5rem);
+      gap: 1rem;
+      padding-inline: 0.9rem;
+      scroll-padding-inline: 0.9rem;
     }
 
     .project-link {
-      width: min(100%, 22rem);
+      width: min(100%, 14.5rem);
     }
 
     .project-image {
